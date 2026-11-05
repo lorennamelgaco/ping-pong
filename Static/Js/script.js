@@ -36,30 +36,65 @@ function updateStickerCount(){
 }
 updateStickerCount();
 
-// Mini game: encontre o ingresso dourado.
+// Mini game: Catch the Beat — capture os itens que caem.
 (()=>{
-  const game=document.querySelector('#ticket-game'),status=document.querySelector('#discovery-game-status'),replay=document.querySelector('#discovery-replay');
-  if(!game||!status||!replay)return;
-  let winningTicket=0,played=false;
-  const choices=[...game.querySelectorAll('.ticket-choice')];
-  function resetGame(){
-    winningTicket=Math.floor(Math.random()*choices.length);played=false;
-    choices.forEach((button,i)=>{button.disabled=false;button.classList.remove('ticket-win','ticket-miss');button.querySelector('span').textContent=['✦','♫','★'][i]});
-    status.textContent='ESCOLHA SEU INGRESSO.';
-    replay.hidden=true;
+  const arena=document.querySelector('#catch-arena');
+  if(!arena)return;
+  const basket=document.querySelector('#catch-basket'),scoreEl=document.querySelector('#catch-score'),timeEl=document.querySelector('#catch-time'),bestEl=document.querySelector('#catch-best');
+  const startPanel=document.querySelector('#catch-start'),startButton=document.querySelector('#catch-start-button'),overlay=document.querySelector('#catch-overlay'),resultTitle=document.querySelector('#catch-result-title'),resultScore=document.querySelector('#catch-result-score'),restart=document.querySelector('#catch-restart'),status=document.querySelector('#catch-status');
+  const items=[{emoji:'🍬',points:10},{emoji:'🫧',points:5},{emoji:'🎵',points:15},{emoji:'💎',points:30},{emoji:'💣',points:-10}];
+  let running=false,score=0,time=30,basketX=50,objects=[],lastSpawn=0,lastFrame=0,animationId=0,timerId=0,dragging=false;
+  let best=Number(localStorage.getItem('pp-catch-best')||0);bestEl.textContent=String(best).padStart(3,'0');
+  function updateBasket(){basket.style.left=basketX+'%'}
+  function updateScore(){scoreEl.textContent=String(score).padStart(3,'0')}
+  function moveBasket(clientX){const rect=arena.getBoundingClientRect();basketX=Math.max(7,Math.min(93,(clientX-rect.left)/rect.width*100));updateBasket()}
+  function spawnItem(){
+    const item=items[Math.floor(Math.random()*items.length)],el=document.createElement('span');
+    el.className='catch-falling-item';el.textContent=item.emoji;el.setAttribute('aria-hidden','true');
+    const x=6+Math.random()*88;el.style.left=x+'%';arena.appendChild(el);
+    objects.push({el,x,y:-8,points:item.points,speed:0.19+Math.random()*0.16});
   }
-  choices.forEach((button,index)=>button.addEventListener('click',()=>{
-    if(played)return;played=true;
-    choices.forEach((item,i)=>{
-      item.disabled=true;
-      if(i===winningTicket){item.classList.add('ticket-win');item.querySelector('span').textContent='✹'}
-      else item.classList.add('ticket-miss');
+  function finish(){
+    running=false;cancelAnimationFrame(animationId);clearInterval(timerId);
+    objects.forEach(o=>o.el.remove());objects=[];
+    const record=score>best;
+    if(record){best=score;localStorage.setItem('pp-catch-best',String(best));bestEl.textContent=String(best).padStart(3,'0')}
+    resultTitle.textContent=record&&score>0?'NOVO RECORDE! ✨':'FIM DE JOGO!';
+    resultScore.textContent=score+' PONTOS';overlay.hidden=false;
+    status.textContent=record&&score>0?'VOCÊ BATEU SEU RECORDE!':'BOA PARTIDA! TENTE MAIS UMA VEZ.';
+  }
+  function frame(timestamp){
+    if(!running)return;
+    const delta=Math.min(34,timestamp-(lastFrame||timestamp));lastFrame=timestamp;
+    if(timestamp-lastSpawn>480){spawnItem();lastSpawn=timestamp}
+    const basketRect=basket.getBoundingClientRect(),arenaRect=arena.getBoundingClientRect();
+    const bx=basketRect.left-arenaRect.left+basketRect.width/2,by=basketRect.top-arenaRect.top;
+    objects=objects.filter(o=>{
+      o.y+=o.speed*delta;o.el.style.top=o.y+'%';
+      const ox=o.x/100*arenaRect.width,oy=o.y/100*arenaRect.height;
+      if(oy>=by-4&&oy<=by+basketRect.height&&Math.abs(ox-bx)<basketRect.width*.62){
+        score=Math.max(0,score+o.points);updateScore();o.el.remove();return false;
+      }
+      if(o.y>105){o.el.remove();return false}
+      return true;
     });
-    status.textContent=index===winningTicket?'VOCÊ ENCONTROU O INGRESSO DOURADO! ✨':'QUASE! O INGRESSO DOURADO ESTAVA NO '+(winningTicket+1)+'º TICKET.';
-    replay.hidden=false;
-  }));
-  replay.addEventListener('click',resetGame);
-  resetGame();
+    animationId=requestAnimationFrame(frame);
+  }
+  function begin(){
+    cancelAnimationFrame(animationId);clearInterval(timerId);objects.forEach(o=>o.el.remove());objects=[];
+    score=0;time=30;basketX=50;lastSpawn=0;lastFrame=0;running=true;
+    updateScore();updateBasket();timeEl.textContent=time;startPanel.hidden=true;overlay.hidden=true;
+    status.textContent='VAI, VAI, VAI! PEGUE O MÁXIMO QUE CONSEGUIR!';
+    timerId=setInterval(()=>{time--;timeEl.textContent=time;if(time<=0)finish()},1000);
+    animationId=requestAnimationFrame(frame);arena.focus();
+  }
+  function keyMove(e){if(!running)return;if(['ArrowLeft','ArrowRight','a','A','d','D'].includes(e.key)){e.preventDefault();basketX=Math.max(7,Math.min(93,basketX+(e.key==='ArrowLeft'||e.key.toLowerCase()==='a'?-6:6)));updateBasket()}}
+  arena.addEventListener('keydown',keyMove);document.addEventListener('keydown',e=>{if(running&&document.activeElement!==arena)keyMove(e)});
+  arena.addEventListener('pointerdown',e=>{if(!running)return;dragging=true;arena.setPointerCapture(e.pointerId);moveBasket(e.clientX)});
+  arena.addEventListener('pointermove',e=>{if(dragging&&running)moveBasket(e.clientX)});
+  arena.addEventListener('pointerup',()=>dragging=false);arena.addEventListener('pointercancel',()=>dragging=false);
+  startButton.addEventListener('click',begin);restart.addEventListener('click',begin);
+  updateBasket();updateScore();timeEl.textContent=time;
 })();
 // Brindes: checklist persistente.
 const giftChecks=[...document.querySelectorAll('[data-gift]')];const savedGifts=JSON.parse(localStorage.getItem('pp-gifts')||'[]');giftChecks.forEach(input=>{input.checked=savedGifts.includes(input.dataset.gift);input.addEventListener('change',()=>{const checked=giftChecks.filter(item=>item.checked).map(item=>item.dataset.gift);localStorage.setItem('pp-gifts',JSON.stringify(checked));document.querySelector('#gift-count').textContent=checked.length})});document.querySelector('#gift-count').textContent=giftChecks.filter(i=>i.checked).length;
