@@ -41,3 +41,80 @@
 @keyframes celebratePop{from{opacity:0;transform:translateY(28px) scale(.82)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes celebrateSpin{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.album-celebration,.celebration-card,.celebration-spark{animation:none!important}}
+
+
+/* =========================================================
+   BEAT STATION — coleção de cards musicais (módulo independente)
+   ========================================================= */
+.beat-cards-module{grid-column:1/-1;width:100%;min-width:0}
+.beat-cards-intro{display:flex;align-items:end;justify-content:space-between;gap:40px;margin:76px 0 30px;padding-top:42px;border-top:1px solid rgba(255,255,255,.2)}
+.beat-cards-intro .eyebrow{color:var(--yellow);font-size:10px;letter-spacing:2px;font-weight:800;margin-bottom:12px}
+.beat-cards-intro h3{font:clamp(30px,4vw,48px)/.98 var(--display);color:#fff}
+.beat-cards-intro h3 em{font-style:normal;color:var(--yellow)}
+.beat-cards-intro>p{max-width:410px;color:rgba(255,255,255,.72);font-size:13px;line-height:1.8}
+.beat-cards-toolbar{display:flex;justify-content:space-between;align-items:center;color:rgba(255,255,255,.65);font-size:9px;font-weight:800;letter-spacing:1.5px;margin-bottom:20px}
+.beat-cards-toolbar b{color:var(--yellow);font-size:17px;margin-right:5px}
+.beat-card-gallery{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:22px}
+.beat-card-item{min-width:0}
+.beat-card-tile{position:relative;width:100%;aspect-ratio:2/2.85;perspective:1000px;cursor:pointer;outline:none}
+.beat-card-flipper{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.2,.75,.2,1)}
+.beat-card-tile.is-flipped .beat-card-flipper{transform:rotateY(180deg)}
+.beat-card-face{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:13px;padding:9px;background:linear-gradient(135deg,#fff 0%,#9ba4b0 14%,#fff 26%,#7c8794 42%,#f9cce0 58%,#fff 72%,#9ca6b2 88%,#fff 100%);box-shadow:0 12px 28px rgba(0,0,0,.35)}
+.beat-card-face:before{content:"";position:absolute;inset:4px;border:1px solid rgba(255,255,255,.9);border-radius:10px;pointer-events:none;z-index:2}
+.beat-card-face-inner{position:relative;height:100%;border-radius:8px;overflow:hidden;background:#101018;color:#fff;isolation:isolate}
+.beat-card-face-inner:after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;opacity:.28;background:linear-gradient(115deg,transparent 20%,rgba(255,255,255,.55) 37%,transparent 52%),repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.035) 4px)}
+.beat-card-holo{position:absolute;inset:-80%;z-index:4;pointer-events:none;opacity:.28;background:conic-gradient(from 0deg,transparent 0 12%,#ff72bd 18%,#70d8ff 26%,#fff 33%,#ffe36d 42%,transparent 52%);mix-blend-mode:screen;animation:beatHolo 8s linear infinite}
+@keyframes beatHolo{to{transform:rotate(360deg)}}
+.beat-card-front-content,.beat-card-back-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;padding:13px 12px}
+.beat-card-topline{display:flex;justify-content:space-between;gap:5px;font:8px/1.2 monospace;letter-spacing:1px;color:#fff}
+.beat-card-photo{height:48%;min-height:95px;margin:12px 0 10px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.55);background:radial-gradient(circle at 30% 20%,var(--c3),transparent 50%),linear-gradient(140deg,var(--c1),var(--c2));display:grid;place-items:center}
+.beat-card-photo img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.beat-card-initials{font:clamp(30px,3vw,48px)/1 var(--display);color:#fff;text-shadow:0 3px 15px #0008}
+.beat-card-genre{font:8px/1.3 monospace;letter-spacing:1.5px;color:var(--c3);text-transform:uppercase}
+.beat-card-song{font:700 clamp(11px,1vw,15px)/1.15 var(--body);margin-top:5px;color:#fff}
+.beat-card-artist{font:clamp(17px,1.45vw,23px)/.98 var(--display);text-transform:uppercase;margin-top:7px;overflow-wrap:anywhere;color:#fff}
+.beat-card-motif{margin-top:auto;padding-top:10px;font:7px/1.3 monospace;letter-spacing:1px;color:rgba(255,255,255,.7);border-top:1px solid #ffffff40}
+.beat-card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font:8px monospace;color:#fff}
+.beat-card-back{transform:rotateY(180deg)}
+.beat-card-back .beat-card-face-inner{background:radial-gradient(circle at 80% 0%,var(--c2),transparent 45%),linear-gradient(145deg,#181822,#08080c 70%)}
+.beat-card-back-content{padding:17px 15px}
+.beat-card-back-brand{font:9px monospace;letter-spacing:2px;color:var(--c3);border-bottom:1px solid #ffffff35;padding-bottom:9px}
+.beat-card-back-name{font:clamp(17px,1.35vw,22px)/1 var(--display);margin:14px 0 5px;text-transform:uppercase}
+.beat-card-back-genre{font:8px monospace;letter-spacing:1.3px;color:var(--c3)}
+.beat-card-back-song{font-size:11px;font-weight:700;margin:11px 0}
+.beat-card-quote{font:italic 11px/1.4 var(--body);color:var(--yellow);margin:2px 0 8px}
+.beat-card-bio{font:9px/1.5 var(--body);color:#ffffffb8}
+.beat-card-qr-row{display:flex;align-items:center;gap:9px;margin-top:auto}
+.beat-card-qr{width:66px;height:66px;min-width:66px;padding:4px;background:#fff;border-radius:4px;display:grid;place-items:center}
+.beat-card-qr img,.beat-card-qr canvas{width:58px!important;height:58px!important}
+.beat-card-qr-label{font:7px/1.5 monospace;letter-spacing:1px;color:#fff}
+.beat-card-qr-label strong{display:block;color:var(--c3);font-size:9px}
+.beat-card-expand{display:block;margin:10px auto 0;border:1px solid #ffffff65;background:transparent;color:#fff;padding:7px 12px;border-radius:30px;font-size:8px;font-weight:800;letter-spacing:1px;cursor:pointer}
+.beat-card-expand:hover{background:var(--yellow);color:#080808;border-color:var(--yellow)}
+.beat-card-note{font-size:11px;color:rgba(255,255,255,.55);margin-top:22px;line-height:1.6}
+.beat-card-modal[hidden]{display:none}
+.beat-card-modal{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:25px}
+.beat-modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(8px)}
+.beat-modal-panel{position:relative;z-index:1;width:min(920px,96vw);max-height:94vh;overflow:auto;background:#17151d;color:#fff;border:1px solid #ffffff30;border-radius:18px;padding:28px;box-shadow:0 25px 90px #0009}
+.beat-modal-close{position:absolute;right:17px;top:12px;border:0;background:none;color:#fff;font-size:32px;cursor:pointer}
+.beat-modal-heading{text-align:center;margin-bottom:18px}
+.beat-modal-heading .eyebrow{font:9px monospace;letter-spacing:2px;color:var(--yellow)}
+.beat-modal-heading h3{font:28px var(--display);margin-top:8px}
+.beat-modal-heading h3 em{font-style:normal;color:var(--pink)}
+.beat-modal-card-wrap{width:250px;aspect-ratio:2/2.85;margin:0 auto 22px;perspective:1200px}
+.beat-modal-card-wrap .beat-card-face{border-radius:16px;padding:12px}
+.beat-modal-card-wrap .beat-card-face-inner{border-radius:10px}
+.beat-modal-card-wrap .beat-card-front-content,.beat-modal-card-wrap .beat-card-back-content{padding:17px}
+.beat-modal-card-wrap .beat-card-photo{min-height:130px}
+.beat-modal-card-wrap .beat-card-artist{font-size:25px}
+.beat-modal-card-wrap .beat-card-song{font-size:15px}
+.beat-modal-card-wrap .beat-card-qr{width:76px;height:76px;min-width:76px}
+.beat-modal-card-wrap .beat-card-qr img,.beat-modal-card-wrap .beat-card-qr canvas{width:68px!important;height:68px!important}
+.beat-modal-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+.beat-modal-actions .button{border:0;cursor:pointer;font-size:10px}
+.beat-upload-label{display:inline-flex;align-items:center}
+.beat-modal-hint{text-align:center;color:#ffffff80;font-size:10px;margin-top:16px}
+@media(max-width:1100px){.beat-card-gallery{grid-template-columns:repeat(4,minmax(0,1fr))}.beat-card-face{padding:7px}.beat-card-front-content,.beat-card-back-content{padding:9px}.beat-card-photo{min-height:75px}.beat-card-qr{width:48px;height:48px;min-width:48px}.beat-card-qr img,.beat-card-qr canvas{width:42px!important;height:42px!important}}
+@media(max-width:700px){.beat-card-gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.beat-cards-intro{display:block}.beat-cards-intro>p{margin-top:16px}.beat-cards-toolbar{font-size:8px;gap:12px}.beat-modal-panel{padding:22px 14px}.beat-modal-actions .button{padding:12px}.beat-modal-card-wrap{width:min(250px,70vw)}}
+@media print{body.beat-printing>*{display:none!important}body.beat-printing #beat-print-root{display:block!important}}
+#beat-print-root{display:none}

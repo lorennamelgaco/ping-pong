@@ -162,3 +162,131 @@ build();sync();
 const quizData={music:{label:'DESAFIO MUSICAL',questions:[{q:'Qual destes elementos costuma fazer parte de uma playlist?',a:['Faixas musicais','Figurinhas','Chaveiros','Posters'],correct:0,why:'Uma playlist reúne músicas para ouvir em sequência.'},{q:'Qual plataforma de streaming aparece nesta experiência?',a:['Spotify','Calculadora','Bloco de notas','Agenda'],correct:0,why:'A área Beat Station foi pensada para integrar uma playlist do Spotify.'},{q:'Qual destes gêneros é ligado à cultura urbana?',a:['Hip-hop','Ópera barroca','Música medieval','Canto gregoriano'],correct:0,why:'O hip-hop é uma das expressões culturais urbanas que inspiram o projeto.'},{q:'O que combina com a proposta Beat Station?',a:['Música e identidade','Controle de estoque','Receitas culinárias','Manual de montagem'],correct:0,why:'A proposta conecta música, arte e identidade.'}]},brand:{label:'DESAFIO PING PONG',questions:[{q:'Em que ano, segundo a história apresentada no projeto, Ping Pong foi lançado?',a:['1945','1960','1985','2001'],correct:0,why:'O contexto histórico do projeto apresenta 1945 como ano de lançamento.'},{q:'O que acompanhava a experiência clássica da marca?',a:['Figurinhas e colecionáveis','Aplicativo de banco','Jogos online','Ingressos de cinema'],correct:0,why:'As figurinhas e colecionáveis faziam parte da experiência de descoberta e troca.'},{q:'Qual era uma das brincadeiras ligadas às coleções?',a:['Trocar figurinhas','Montar computadores','Fazer chamadas','Editar vídeos'],correct:0,why:'Trocar e completar coleções fazia parte da diversão.'},{q:'O que a nova Ping Pong Collection propõe?',a:['Levar a nostalgia ao universo digital','Apagar as coleções antigas','Vender apenas roupas','Substituir música por esportes'],correct:0,why:'A ideia é atualizar o legado com cards, avatares e experiências digitais.'}]}};let quizType='music',quizIndex=0,quizScore=0,answered=false,finished=false;const qEl=document.querySelector('#quiz-question'),optsEl=document.querySelector('#quiz-options'),feedbackEl=document.querySelector('#quiz-feedback'),nextEl=document.querySelector('#quiz-next');function renderQuiz(){const data=quizData[quizType],q=data.questions[quizIndex];document.querySelector('#quiz-category').textContent=data.label;document.querySelector('#quiz-progress').textContent='PERGUNTA '+(quizIndex+1)+' / '+data.questions.length;qEl.textContent=q.q;optsEl.innerHTML='';feedbackEl.textContent='';nextEl.disabled=true;nextEl.textContent=quizIndex===data.questions.length-1?'VER RESULTADO ↗':'PRÓXIMA PERGUNTA →';answered=false;finished=false;q.a.forEach((answer,i)=>{const b=document.createElement('button');b.className='quiz-option';b.textContent=String.fromCharCode(65+i)+'. '+answer;b.addEventListener('click',()=>answerQuiz(i));optsEl.appendChild(b)})}function answerQuiz(index){if(answered)return;answered=true;const q=quizData[quizType].questions[quizIndex];[...optsEl.children].forEach((b,i)=>{b.disabled=true;if(i===q.correct)b.classList.add('correct');if(i===index&&i!==q.correct)b.classList.add('wrong')});if(index===q.correct){quizScore++;feedbackEl.textContent='ACERTOU! '+q.why}else feedbackEl.textContent='QUASE! '+q.why;nextEl.disabled=false}nextEl.addEventListener('click',()=>{if(finished){quizIndex=0;quizScore=0;renderQuiz();return}if(!answered)return;if(quizIndex<quizData[quizType].questions.length-1){quizIndex++;renderQuiz()}else{qEl.textContent='VOCÊ FEZ '+quizScore+' DE '+quizData[quizType].questions.length+' PONTOS!';optsEl.innerHTML='';feedbackEl.textContent=quizScore===4?'PERFEITO! VOCÊ DOMINA ESSA VIBE.':'BOA! CONTINUE EXPLORANDO O UNIVERSO PING PONG.';nextEl.textContent='JOGAR NOVAMENTE ↻';nextEl.disabled=false;finished=true}});document.querySelectorAll('.quiz-tab').forEach(tab=>tab.addEventListener('click',()=>{document.querySelectorAll('.quiz-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');quizType=tab.dataset.quiz;quizIndex=0;quizScore=0;renderQuiz()}));renderQuiz();
 // Animações de entrada.
 const revealTargets=document.querySelectorAll('.collect-card,.rarity-card,.feature-grid article,.story-content,.gift-item,.fact-card');if('IntersectionObserver'in window){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target)}}),{threshold:.12});revealTargets.forEach(item=>{item.classList.add('reveal');observer.observe(item)});}
+
+/* =========================================================
+   BEAT STATION — 18 music cards. Isolated module.
+   ========================================================= */
+(()=> {
+  const PLAYLIST_URL='https://open.spotify.com/playlist/7lf8JbBcPKjFRzCZlkMv5m';
+  const artists=[
+    {n:1,name:'João Gomes',song:'Meu Pedaço de Pecado',genre:'Piseiro',quote:'O forró mora no peito',bio:'A voz do piseiro que levou o sertão pernambucano às paradas do Brasil.',motif:'✦ XOTE ✦ SERTÃO ✦ PISEIRO',c1:'#EFD24C',c2:'#DF1164',c3:'#55B96B'},
+    {n:2,name:'Lola Young',song:'Messy',genre:'Alt Pop',quote:'Messy is honest',bio:'Cantora londrina de voz crua e composições sem filtro.',motif:'LONDON • RAW • ALT',c1:'#B9DDF2',c2:'#DF1164',c3:'#A6A6A6'},
+    {n:3,name:'Duquesa',song:'99 Problemas',genre:'Hip-Hop',quote:'A rua é minha coroa',bio:'Rapper baiana que une rima afiada, moda e atitude.',motif:'BARS • STREET • CROWN',c1:'#EFD24C',c2:'#08080C',c3:'#DF1164'},
+    {n:4,name:'Luísa Sonza',song:'Sagrado Profano',genre:'Pop',quote:'Ousadia é estilo',bio:'Estrela do pop brasileiro, sem medo de reinventar a própria imagem.',motif:'POP ★ FASHION ★ BOLD',c1:'#DF1164',c2:'#F5BBD2',c3:'#FFFFFF'},
+    {n:5,name:'Zara Larsson',song:'Lush Life',genre:'Future Pop',quote:'Turn the lights up',bio:'Hitmaker sueca de pop vibrante e visual futurista.',motif:'STOCKHOLM // FUTURE // POP',c1:'#65A9D8',c2:'#F5BBD2',c3:'#B9DDF2'},
+    {n:6,name:'Halsey',song:'Without Me',genre:'Alternative',quote:'Art is a mirror',bio:'Artista multifacetada entre o pop alternativo e o rock.',motif:'ART ◆ ALT ◆ SOUL',c1:'#55B96B',c2:'#08080C',c3:'#B9DDF2'},
+    {n:7,name:'Demi Lovato',song:'Heart Attack',genre:'Pop Rock',quote:'Loud and unbroken',bio:'Voz potente que transita entre o pop e o rock com atitude.',motif:'ROCK ⚡ POP ⚡ VOICE',c1:'#DF1164',c2:'#08080C',c3:'#A6A6A6'},
+    {n:8,name:'MGK',song:"my ex's best friend",genre:'Pop Punk',quote:'Plug in. Break out.',bio:'Do rap ao pop punk, sempre de guitarra rosa em punho.',motif:'PUNK ✕ ROCK ✕ STREET',c1:'#F5BBD2',c2:'#08080C',c3:'#DF1164'},
+    {n:9,name:'J Balvin',song:'LA CANCIÓN',genre:'Reggaeton',quote:'Color es mi idioma',bio:'Embaixador colombiano do reggaeton e da cultura latina global.',motif:'MEDELLÍN ☼ REGGAETON ☼ COLOR',c1:'#55B96B',c2:'#EFD24C',c3:'#DF1164'},
+    {n:10,name:'Calvin Harris',song:'One Kiss',genre:'Electronic',quote:'Feel the drop',bio:'DJ e produtor escocês que domina as pistas do mundo.',motif:'BPM 128 ▲ NEON ▲ DROP',c1:'#65A9D8',c2:'#DF1164',c3:'#B9DDF2'},
+    {n:11,name:'Maroon 5',song:'Memories',genre:'Pop Rock',quote:'Five sounds, one groove',bio:'Banda de Los Angeles que define o pop rock contemporâneo.',motif:'BAND • LA • POP ROCK',c1:'#A6A6A6',c2:'#DF1164',c3:'#FFFFFF',group:true},
+    {n:12,name:'Ne-Yo',song:'So Sick',genre:'R&B',quote:'Smooth never fades',bio:'Compositor e cantor de R&B, sinônimo de elegância.',motif:'R&B ♦ SMOOTH ♦ CLASS',c1:'#EFD24C',c2:'#08080C',c3:'#A6A6A6'},
+    {n:13,name:'Black Eyed Peas',song:'I Gotta Feeling',genre:'Hip-Hop / Electro',quote:"Tonight's gonna be good",bio:'Grupo que fundiu hip-hop, eletrônica e cultura pop.',motif:'HIP-HOP ⟡ ELECTRO ⟡ PARTY',c1:'#55B96B',c2:'#65A9D8',c3:'#EFD24C',group:true},
+    {n:14,name:'Nelly',song:'Dilemma',genre:'Hip-Hop',quote:'Hot in herre since 2000',bio:'Ícone do hip-hop de St. Louis e dos anos 2000.',motif:'ST. LOUIS • Y2K • HIP-HOP',c1:'#B9DDF2',c2:'#EFD24C',c3:'#08080C'},
+    {n:15,name:'Ivete Sangalo',song:'Sorte Grande',genre:'Axé',quote:'Sai do chão!',bio:'A rainha do axé e do carnaval da Bahia.',motif:'AXÉ ✺ CARNAVAL ✺ BAHIA',c1:'#EFD24C',c2:'#DF1164',c3:'#65A9D8'},
+    {n:16,name:'Elton John',song:'Cold Heart',genre:'Pop Rock',quote:'Glitter is forever',bio:'Lenda britânica de figurinos icônicos e hinos eternos.',motif:'GLAM ✧ PIANO ✧ LEGEND',c1:'#F5BBD2',c2:'#EFD24C',c3:'#DF1164'},
+    {n:17,name:'Gilberto Gil',song:'Andar com Fé',genre:'MPB / Tropicália',quote:'Andar com fé eu vou',bio:'Mestre da Tropicália e da cultura brasileira.',motif:'TROPICÁLIA ❋ MPB ❋ BRASIL',c1:'#55B96B',c2:'#EFD24C',c3:'#65A9D8'},
+    {n:18,name:'Rod Stewart',song:"Da Ya Think I'm Sexy?",genre:'Classic Rock',quote:'Forever young',bio:'Voz rouca do rock clássico com estilo vintage único.',motif:'ROCK • VINTAGE • ICON',c1:'#DF1164',c2:'#A6A6A6',c3:'#EFD24C'}
+  ];
+  const $=s=>document.querySelector(s), gallery=$('#beat-card-gallery'), modal=$('#beat-card-modal'), wrap=$('#beat-modal-card-wrap');
+  if(!gallery||!modal)return;
+  const photos=(()=>{try{return JSON.parse(localStorage.getItem('pp-photos')||'{}')}catch(e){return {}}})();
+  let selected=0;
+  const pad=n=>String(n).padStart(2,'0');
+  const initials=name=>name.split(/\s+/).map(p=>p[0]).slice(0,2).join('').toUpperCase();
+  const esc=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  function face(a,back=false,large=false){
+    const n=pad(a.n),photo=photos[a.n]?'<img src="'+photos[a.n]+'" alt="Foto de '+esc(a.name)+'">':'<span class="beat-card-initials">'+initials(a.name)+'</span>';
+    if(!back)return '<div class="beat-card-face beat-card-front"><div class="beat-card-face-inner" style="--c1:'+a.c1+';--c2:'+a.c2+';--c3:'+a.c3+'"><div class="beat-card-holo"></div><div class="beat-card-front-content"><div class="beat-card-topline"><span>PING●PONG</span><span>'+n+'/18</span></div><div class="beat-card-photo">'+photo+'</div><span class="beat-card-genre">'+esc(a.genre)+'</span><div class="beat-card-song">'+esc(a.song)+'</div><h4 class="beat-card-artist">'+esc(a.name)+'</h4><div class="beat-card-motif">'+esc(a.motif)+'</div><div class="beat-card-footer"><span>BEAT SERIES</span><span>✦ LIMITED ✦</span></div></div></div></div>';
+    return '<div class="beat-card-face beat-card-back"><div class="beat-card-face-inner" style="--c1:'+a.c1+';--c2:'+a.c2+';--c3:'+a.c3+'"><div class="beat-card-holo"></div><div class="beat-card-back-content"><div class="beat-card-back-brand">PING●PONG / BEAT SERIES</div><h4 class="beat-card-back-name">'+esc(a.name)+'</h4><span class="beat-card-back-genre">'+esc(a.genre)+'</span><p class="beat-card-back-song">'+esc(a.song)+'</p><p class="beat-card-quote">“'+esc(a.quote)+'”</p><p class="beat-card-bio">'+esc(a.bio)+'</p><div class="beat-card-qr-row"><div class="beat-card-qr" data-qr></div><div class="beat-card-qr-label"><strong>SCAN & PLAY</strong>OUÇA A PLAYLIST<br>BEAT STATION</div></div><div class="beat-card-footer"><span>COLLECTIBLE MUSIC CARD</span><span>'+n+'/18</span></div></div></div></div>';
+  }
+  function cardMarkup(a,modalCard=false){
+    return '<div class="beat-card-tile'+(modalCard?' beat-modal-tile':'')+'" data-card="'+a.n+'"><div class="beat-card-flipper">'+face(a)+face(a,true)+'</div></div>';
+  }
+  function addQr(root){
+    root.querySelectorAll('[data-qr]').forEach(el=>{
+      if(el.dataset.ready)return;
+      el.dataset.ready='1';
+      if(window.QRCode){new QRCode(el,{text:PLAYLIST_URL,width:140,height:140,colorDark:'#080808',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}
+      else el.textContent='QR';
+    });
+  }
+  gallery.innerHTML=artists.map(a=>'<article class="beat-card-item">'+cardMarkup(a)+'<button type="button" class="beat-card-expand" data-open="'+a.n+'">AMPLIAR CARD ↗</button></article>').join('');
+  addQr(gallery);
+  gallery.addEventListener('click',e=>{
+    const expand=e.target.closest('[data-open]');
+    if(expand){openCard(Number(expand.dataset.open));return;}
+    const tile=e.target.closest('.beat-card-tile');if(tile)tile.classList.toggle('is-flipped');
+  });
+  function openCard(n){
+    selected=Math.max(1,Math.min(18,n));const a=artists[selected-1];
+    $('#beat-modal-title').innerHTML='CARD <em>'+pad(a.n)+'/18</em>';
+    wrap.innerHTML=cardMarkup(a,true);addQr(wrap);modal.hidden=false;document.body.style.overflow='hidden';
+    $('#beat-modal-hint').textContent='O PNG inclui frente e verso. A impressão prepara os dois lados para recorte.';
+  }
+  function closeModal(){modal.hidden=true;document.body.style.overflow='';}
+  modal.addEventListener('click',e=>{if(e.target.closest('[data-beat-close]'))closeModal()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)closeModal()});
+  $('#beat-flip').addEventListener('click',()=>wrap.querySelector('.beat-card-tile')?.classList.toggle('is-flipped'));
+  $('#beat-photo-upload').addEventListener('change',async e=>{
+    const file=e.target.files?.[0];if(!file)return;
+    if(!file.type.startsWith('image/')){ $('#beat-modal-hint').textContent='Escolha um arquivo de imagem.';return;}
+    try{
+      const data=await new Promise((resolve,reject)=>{
+        const reader=new FileReader();reader.onerror=reject;reader.onload=()=>{
+          const img=new Image();img.onerror=reject;img.onload=()=>{
+            const canvas=document.createElement('canvas'),size=420;canvas.width=canvas.height=size;
+            const scale=Math.max(size/img.width,size/img.height),w=img.width*scale,h=img.height*scale;
+            canvas.getContext('2d').drawImage(img,(size-w)/2,(size-h)/2,w,h);
+            resolve(canvas.toDataURL('image/jpeg',.72));
+          };img.src=reader.result;
+        };reader.readAsDataURL(file);
+      });
+      photos[selected]=data;localStorage.setItem('pp-photos',JSON.stringify(photos));
+      openCard(selected);$('#beat-modal-hint').textContent='FOTO SALVA NESTE NAVEGADOR!';
+    }catch(err){$('#beat-modal-hint').textContent='Não foi possível salvar. Tente uma imagem menor.';}
+    e.target.value='';
+  });
+  async function renderFaces(){
+    if(!window.html2canvas)throw new Error('A ferramenta de imagem ainda está carregando. Atualize a página e tente novamente.');
+    const tile=wrap.querySelector('.beat-card-tile');
+    const front=tile.querySelector('.beat-card-front'),back=tile.querySelector('.beat-card-back');
+    const saved=[front,back].map(el=>({transform:el.style.transform,backface:el.style.backfaceVisibility,webkit:el.style.webkitBackfaceVisibility}));
+    const was=tile.classList.contains('is-flipped');
+    tile.classList.remove('is-flipped');
+    [front,back].forEach(el=>{el.style.transform='none';el.style.backfaceVisibility='visible';el.style.webkitBackfaceVisibility='visible'});
+    const opts={backgroundColor:null,scale:3,useCORS:true,logging:false};
+    try{
+      const frontCanvas=await html2canvas(front,opts);
+      const backCanvas=await html2canvas(back,opts);
+      return {front:frontCanvas,back:backCanvas};
+    }finally{
+      [front,back].forEach((el,i)=>{el.style.transform=saved[i].transform;el.style.backfaceVisibility=saved[i].backface;el.style.webkitBackfaceVisibility=saved[i].webkit});
+      if(was)tile.classList.add('is-flipped');
+    }
+  }
+  $('#beat-download').addEventListener('click',async()=>{
+    const btn=$('#beat-download'),hint=$('#beat-modal-hint');btn.disabled=true;hint.textContent='PREPARANDO SEU PNG...';
+    try{
+      const {front,back}=await renderFaces(),gap=36,canvas=document.createElement('canvas');
+      canvas.width=front.width+back.width+gap;canvas.height=Math.max(front.height,back.height);
+      const ctx=canvas.getContext('2d');ctx.fillStyle='#f3f0eb';ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(front,0,0);ctx.drawImage(back,front.width+gap,0);
+      const a=document.createElement('a');a.download='beat-card-'+pad(selected)+'.png';a.href=canvas.toDataURL('image/png');a.click();
+      hint.textContent='PNG SALVO! A FRENTE E O VERSO ESTÃO NA MESMA IMAGEM.';
+    }catch(err){hint.textContent=err.message||'Não foi possível gerar o PNG.';}
+    finally{btn.disabled=false;}
+  });
+  $('#beat-print').addEventListener('click',async()=>{
+    const btn=$('#beat-print'),hint=$('#beat-modal-hint');btn.disabled=true;hint.textContent='PREPARANDO IMPRESSÃO...';
+    const win=window.open('','_blank');
+    if(!win){btn.disabled=false;hint.textContent='Permita pop-ups para imprimir o card.';return;}
+    try{
+      const {front,back}=await renderFaces();
+      const frontUrl=front.toDataURL('image/png'),backUrl=back.toDataURL('image/png');
+      win.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Beat Card '+pad(selected)+'</title><style>@page{size:A4 landscape;margin:12mm}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#fff}.sheet{min-height:180mm;display:flex;align-items:center;justify-content:center;gap:12mm}.sheet img{height:150mm;width:auto;max-width:48%;object-fit:contain}.caption{position:fixed;bottom:5mm;left:0;right:0;text-align:center;font-size:9pt;color:#555}@media print{.caption{display:none}}</style></head><body><main class="sheet"><img src="'+frontUrl+'" alt="Frente do card"><img src="'+backUrl+'" alt="Verso do card"></main><p class="caption">Frente e verso lado a lado para recorte.</p><script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script></body></html>');
+      win.document.close();hint.textContent='IMPRESSÃO ABERTA EM UMA NOVA ABA.';
+    }catch(err){win.close();hint.textContent=err.message||'Não foi possível preparar a impressão.';}
+    finally{btn.disabled=false;}
+  });
+})();
