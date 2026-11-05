@@ -6,7 +6,7 @@
   const startPanel=document.querySelector('#catch-start'),startButton=document.querySelector('#catch-start-button'),overlay=document.querySelector('#catch-overlay'),resultTitle=document.querySelector('#catch-result-title'),resultScore=document.querySelector('#catch-result-score'),restart=document.querySelector('#catch-restart'),status=document.querySelector('#catch-status');
   if(!basket||!scoreEl||!timeEl||!bestEl||!startPanel||!startButton||!overlay||!resultTitle||!resultScore||!restart||!status)return;
   const items=[{emoji:'🍬',points:10},{emoji:'🫧',points:5},{emoji:'🎵',points:15},{emoji:'💎',points:30},{emoji:'💣',points:-10}];
-  let running=false,score=0,time=30,basketX=50,targetBasketX=50,objects=[],lastSpawn=0,lastFrame=0,animationId=0,timerId=0,dragging=false;
+  let running=false,score=0,time=30,basketX=50,targetBasketX=50,objects=[],pressedKeys=new Set(),lastSpawn=0,lastFrame=0,animationId=0,timerId=0,dragging=false;
   let best=Number(localStorage.getItem('pp-catch-best')||0);bestEl.textContent=String(best).padStart(3,'0');
   function updateBasket(){basket.style.left=basketX+'%'}
   function updateScore(){scoreEl.textContent=String(score).padStart(3,'0')}
@@ -15,7 +15,7 @@
     const item=items[Math.floor(Math.random()*items.length)],el=document.createElement('span');
     el.className='catch-falling-item';el.textContent=item.emoji;el.setAttribute('aria-hidden','true');
     const x=6+Math.random()*88;el.style.left=x+'%';arena.appendChild(el);
-    objects.push({el,x,y:-8,points:item.points,speed:0.045+Math.random()*0.025});
+    objects.push({el,x,y:-8,points:item.points,speed:0.018+Math.random()*0.012});
   }
   function finish(){
     running=false;cancelAnimationFrame(animationId);clearInterval(timerId);
@@ -29,8 +29,8 @@
   function frame(timestamp){
     if(!running)return;
     const delta=Math.min(34,timestamp-(lastFrame||timestamp));lastFrame=timestamp;
-    if(timestamp-lastSpawn>650){spawnItem();lastSpawn=timestamp}
-    basketX+=(targetBasketX-basketX)*Math.min(1,delta/75);updateBasket();
+    if(timestamp-lastSpawn>850){spawnItem();lastSpawn=timestamp}
+    const direction=(pressedKeys.has('ArrowRight')||pressedKeys.has('d')||pressedKeys.has('D')?1:0)-(pressedKeys.has('ArrowLeft')||pressedKeys.has('a')||pressedKeys.has('A')?1:0);if(direction)targetBasketX=Math.max(7,Math.min(93,targetBasketX+direction*0.055*delta));basketX+=(targetBasketX-basketX)*Math.min(1,delta/95);updateBasket();
     const basketRect=basket.getBoundingClientRect(),arenaRect=arena.getBoundingClientRect();
     const bx=basketRect.left-arenaRect.left+basketRect.width/2,by=basketRect.top-arenaRect.top;
     objects=objects.filter(o=>{
@@ -46,14 +46,15 @@
   }
   function begin(){
     cancelAnimationFrame(animationId);clearInterval(timerId);objects.forEach(o=>o.el.remove());objects=[];
-    score=0;time=30;basketX=50;targetBasketX=50;lastSpawn=0;lastFrame=0;running=true;
+    score=0;time=30;basketX=50;targetBasketX=50;pressedKeys.clear();lastSpawn=0;lastFrame=0;running=true;
     updateScore();updateBasket();timeEl.textContent=time;startPanel.hidden=true;overlay.hidden=true;
     status.textContent='VAI, VAI, VAI! PEGUE O MÁXIMO QUE CONSEGUIR!';
     timerId=setInterval(()=>{time--;timeEl.textContent=time;if(time<=0)finish()},1000);
     animationId=requestAnimationFrame(frame);arena.focus();
   }
-  function keyMove(e){if(!running)return;if(['ArrowLeft','ArrowRight','a','A','d','D'].includes(e.key)){e.preventDefault();targetBasketX=Math.max(7,Math.min(93,targetBasketX+(e.key==='ArrowLeft'||e.key.toLowerCase()==='a'?-10:10)))}}
-  arena.addEventListener('keydown',keyMove);document.addEventListener('keydown',e=>{if(running&&document.activeElement!==arena)keyMove(e)});
+  function keyDown(e){if(!running)return;const key=e.key;if(['ArrowLeft','ArrowRight','a','A','d','D'].includes(key)){e.preventDefault();pressedKeys.add(key)}}
+  function keyUp(e){pressedKeys.delete(e.key)}
+  arena.addEventListener('keydown',keyDown);document.addEventListener('keydown',keyDown);document.addEventListener('keyup',keyUp);window.addEventListener('blur',()=>pressedKeys.clear());
   arena.addEventListener('pointerdown',e=>{if(!running)return;dragging=true;arena.setPointerCapture(e.pointerId);moveBasket(e.clientX)});
   arena.addEventListener('pointermove',e=>{if(dragging&&running)moveBasket(e.clientX)});
   arena.addEventListener('pointerup',()=>dragging=false);arena.addEventListener('pointercancel',()=>dragging=false);
