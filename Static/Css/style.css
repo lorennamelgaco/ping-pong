@@ -118,3 +118,14 @@
 @media(max-width:700px){.beat-card-gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.beat-cards-intro{display:block}.beat-cards-intro>p{margin-top:16px}.beat-cards-toolbar{font-size:8px;gap:12px}.beat-modal-panel{padding:22px 14px}.beat-modal-actions .button{padding:12px}.beat-modal-card-wrap{width:min(250px,70vw)}}
 @media print{body.beat-printing>*{display:none!important}body.beat-printing #beat-print-root{display:block!important}}
 #beat-print-root{display:none}
+
+
+/* Ajuste individual do enquadramento das fotos dos Beat Cards.
+   Mantém mais espaço acima para não cortar o topo da cabeça. */
+.beat-card-photo-img{object-fit:cover;object-position:center 50%}
+.beat-card-photo-img-6,
+.beat-card-photo-img-8,
+.beat-card-photo-img-10,
+.beat-card-photo-img-15,
+.beat-card-photo-img-16,
+.beat-card-photo-img-18{object-position:center 22%}
