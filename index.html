@@ -60,13 +60,44 @@
         <article class="collect-card collect-yellow" data-category="digital"><div class="collect-meta"><span>DROP 003</span><span>03 / 03</span></div><div class="collect-visual visual-wave"><div class="wave-disc">♫<small>PP DIGITAL</small></div><span class="visual-stamp">PLAY<br>IT LOUD</span></div><div class="collect-info"><div><h3>BEAT CLUB</h3><p>Som, arte e identidade.</p></div><span class="arrow-circle">↗</span></div><span class="collect-type">DIGITAL / 18 ITENS</span></article>
       </div>
       <p class="demo-caption">* Coleções demonstrativas criadas para apresentar o conceito da plataforma.</p>
+      <div class="discovery-game" id="discovery-game">
+        <div class="discovery-game-copy"><p class="eyebrow pink-text">MINI GAME / SORTE DE COLECIONADOR</p><h3>ACHE O <em>INGRESSO DOURADO.</em></h3><p>Três ingressos, uma descoberta especial. Escolha um e veja se a sorte está do seu lado.</p><span class="discovery-game-status" id="discovery-game-status" aria-live="polite">ESCOLHA SEU INGRESSO.</span></div>
+        <div class="ticket-game" id="ticket-game" aria-label="Escolha um dos três ingressos">
+          <button class="ticket-choice" type="button" data-ticket="0"><span>✦</span><b>INGRESSO</b><small>PP / 001</small></button>
+          <button class="ticket-choice" type="button" data-ticket="1"><span>♫</span><b>INGRESSO</b><small>PP / 002</small></button>
+          <button class="ticket-choice" type="button" data-ticket="2"><span>★</span><b>INGRESSO</b><small>PP / 003</small></button>
+        </div>
+        <button class="button button-dark discovery-replay" id="discovery-replay" type="button" hidden>JOGAR NOVAMENTE ↻</button>
+      </div>
     </section>
 
     <section class="album-section" id="album">
-      <div class="album-copy"><p class="eyebrow">02 / SUA COLEÇÃO, DO SEU JEITO</p><h2>ÁLBUM DE<br><em>FIGURINHAS.</em></h2><p>Marque as figurinhas que você já encontrou e acompanhe sua evolução até completar o álbum.</p><div class="album-counter"><strong id="sticker-count">0</strong><span> DE 12 FIGURINHAS</span><b id="sticker-percent">0%</b></div><div class="progress-track"><span id="sticker-progress"></span></div></div>
-      <div class="sticker-album" id="sticker-album"><div class="sticker-slot"><button type="button" aria-pressed="false">✳<small>PP 001</small></button></div><div class="sticker-slot"><button type="button" aria-pressed="false">♫<small>PP 002</small></button></div><div class="sticker-slot"><button type="button" aria-pressed="false">☻<small>PP 003</small></button></div><div class="sticker-slot"><button type="button" aria-pressed="false">★<small>PP 004</small></button></div><div class="sticker-slot"><button type="button" aria-pressed="false">✦<small>PP 005</small></button></div><div class="sticker-slot"><button type="button" aria-pressed="false">☀<small>PP 006</small></button></div><div class="sticker-slot"><button type="button" aria-pressed="false">♬<small>PP 007</small></button></div><div class="sticker-slot"><button type="button" aria-pressed="false">✹<small>PP 008</small></button></div><div class="sticker-slot"><button type="button" aria-pressed="false">◉<small>PP 009</small></button></div><div class="sticker-slot"><button type="button" aria-pressed="false">⚡<small>PP 010</small></button></div><div class="sticker-slot"><button type="button" aria-pressed="false">◆<small>PP 011</small></button></div><div class="sticker-slot"><button type="button" aria-pressed="false">❖<small>PP 012</small></button></div></div>
-      <p class="sticker-hint">CLIQUE EM CADA ESPAÇO PARA MARCAR AS FIGURINHAS QUE VOCÊ JÁ TEM.</p>
-      <div class="album-celebration" id="album-celebration" role="dialog" aria-modal="true" aria-labelledby="album-celebration-title" hidden><div class="celebration-card"><span class="celebration-spark">✦ ✳ ✦</span><p class="eyebrow">MISSÃO CUMPRIDA / PP COLLECTION</p><h3 id="album-celebration-title">ÁLBUM<br><em>COMPLETO!</em></h3><p>12 de 12 figurinhas. Você encontrou todas! Sua coleção merece esse momento.</p><button class="button button-yellow" id="close-celebration" type="button">CONTINUAR COLECIONANDO ✦</button></div></div>
+      <div class="album-copy">
+        <p class="eyebrow">02 / PASSAPORTE DE EXPERIÊNCIAS</p>
+        <h2>CARIMBE<br><em>SUA HISTÓRIA.</em></h2>
+        <p>Cada festival é um destino, cada show uma memória. Confirme os festivais que você já viveu e deixe seu passaporte musical cheio de histórias.</p>
+        <div class="album-counter"><strong id="sticker-count">0</strong><span> DE 10 FESTIVAIS</span><b id="sticker-percent">0%</b></div>
+        <div class="progress-track"><span id="sticker-progress"></span></div>
+        <p class="passport-caption">PASSPORT TO MUSIC · PING PONG COLLECTION</p>
+      </div>
+      <div class="passport-book" id="sticker-album" aria-label="Passaporte de festivais">
+        <div class="passport-book-header"><span>✦ PASSPORT ✦</span><b>PP / MUSIC TOUR</b><span>BRASIL & WORLD</span></div>
+        <div class="passport-stamps">
+          <button class="festival-stamp" type="button" data-festival="0" aria-pressed="false"><span class="stamp-ring"><b>ROCK</b><strong>IN RIO</strong><small>RIO DE JANEIRO</small><i>✦ ✦ ✦</i></span><small class="stamp-date">FESTIVAL · 001</small></button>
+          <button class="festival-stamp" type="button" data-festival="1" aria-pressed="false"><span class="stamp-ring stamp-blue"><b>LOLLA</b><strong>PALOOZA</strong><small>BRASIL</small><i>♫ ✦ ♫</i></span><small class="stamp-date">FESTIVAL · 002</small></button>
+          <button class="festival-stamp" type="button" data-festival="2" aria-pressed="false"><span class="stamp-ring stamp-yellow"><b>THE</b><strong>TOWN</strong><small>SÃO PAULO</small><i>★ ★ ★</i></span><small class="stamp-date">FESTIVAL · 003</small></button>
+          <button class="festival-stamp" type="button" data-festival="3" aria-pressed="false"><span class="stamp-ring stamp-purple"><b>TOMORROW</b><strong>LAND</strong><small>BRASIL</small><i>✧ ✧ ✧</i></span><small class="stamp-date">FESTIVAL · 004</small></button>
+          <button class="festival-stamp" type="button" data-festival="4" aria-pressed="false"><span class="stamp-ring stamp-green"><b>COALA</b><strong>FESTIVAL</strong><small>SÃO PAULO</small><i>☼ ☼ ☼</i></span><small class="stamp-date">FESTIVAL · 005</small></button>
+          <button class="festival-stamp" type="button" data-festival="5" aria-pressed="false"><span class="stamp-ring stamp-red"><b>PRIMAVERA</b><strong>SOUND</strong><small>MUSIC & ART</small><i>✿ ✿ ✿</i></span><small class="stamp-date">FESTIVAL · 006</small></button>
+          <button class="festival-stamp" type="button" data-festival="6" aria-pressed="false"><span class="stamp-ring stamp-orange"><b>COACHELLA</b><strong>VALLEY</strong><small>CALIFORNIA</small><i>☀ ✦ ☀</i></span><small class="stamp-date">FESTIVAL · 007</small></button>
+          <button class="festival-stamp" type="button" data-festival="7" aria-pressed="false"><span class="stamp-ring stamp-dark"><b>VILLA</b><strong>MIX</strong><small>BRASIL</small><i>♫ ♫ ♫</i></span><small class="stamp-date">FESTIVAL · 008</small></button>
+          <button class="festival-stamp" type="button" data-festival="8" aria-pressed="false"><span class="stamp-ring stamp-blue"><b>OKTOBER</b><strong>FEST</strong><small>BLUMENAU · BR</small><i>✦ ♜ ✦</i></span><small class="stamp-date">FESTIVAL · 009</small></button>
+          <button class="festival-stamp" type="button" data-festival="9" aria-pressed="false"><span class="stamp-ring stamp-purple"><b>C6</b><strong>FEST</strong><small>SÃO PAULO</small><i>JAZZ · ART · SOUND</i></span><small class="stamp-date">FESTIVAL · 010</small></button>
+        </div>
+        <div class="passport-book-footer"><span>ADMIT ONE · COLLECT MEMORIES</span><span>✦ ✦ ✦</span></div>
+      </div>
+      <p class="sticker-hint">CLIQUE EM UM FESTIVAL PARA CARIMBAR SEU PASSAPORTE. CLIQUE NOVAMENTE PARA REMOVER.</p>
+      <div class="album-celebration" id="album-celebration" role="dialog" aria-modal="true" aria-labelledby="album-celebration-title" hidden><div class="celebration-card"><span class="celebration-spark">✦ ✳ ✦</span><p class="eyebrow">MISSÃO CUMPRIDA / PP COLLECTION</p><h3 id="album-celebration-title">PASSAPORTE<br><em>COMPLETO!</em></h3><p>10 de 10 festivais carimbados. Você colecionou experiências pelo mundo!</p><button class="button button-yellow" id="close-celebration" type="button">CONTINUAR VIAJANDO ✦</button></div></div>
     </section>
 
     <section class="gift-section" id="brindes">
