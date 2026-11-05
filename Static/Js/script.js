@@ -3,15 +3,64 @@ const filters=document.querySelectorAll('.filter');const cards=document.querySel
 // Menu mobile (botão ☰): abre e fecha a navegação.
 const menuToggle=document.querySelector('.menu-toggle'),mainNav=document.querySelector('.main-nav');if(menuToggle&&mainNav){menuToggle.addEventListener('click',()=>{const open=mainNav.classList.toggle('open');menuToggle.setAttribute('aria-expanded',String(open))});mainNav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{mainNav.classList.remove('open');menuToggle.setAttribute('aria-expanded','false')}))}
 const toast=document.querySelector('.toast');let toastTimer;document.querySelectorAll('.collect-card').forEach(card=>{card.setAttribute('tabindex','0');card.setAttribute('role','button');const show=()=>{toast.textContent='Em breve: '+card.querySelector('h3').textContent+' — coleção demonstrativa.';toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2600)};card.addEventListener('click',show);card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();show()}});});
-// Álbum: progresso de figurinhas salvo no navegador.
-const stickerButtons=[...document.querySelectorAll('.sticker-slot button')];const savedStickers=JSON.parse(localStorage.getItem('pp-stickers')||'[]');stickerButtons.forEach((button,index)=>{if(savedStickers.includes(index)){button.classList.add('collected');button.setAttribute('aria-pressed','true')}button.addEventListener('click',()=>{button.classList.toggle('collected');button.setAttribute('aria-pressed',String(button.classList.contains('collected')));updateStickerCount()})});let previousStickerCount=stickerButtons.filter(b=>b.classList.contains('collected')).length;
+// PASSAPORTE MUSICAL: carimbos persistentes com animação.
+const stickerButtons=[...document.querySelectorAll('.festival-stamp')];
+let savedStickers=[];
+try{savedStickers=JSON.parse(localStorage.getItem('pp-stickers')||'[]')}catch(e){savedStickers=[]}
+stickerButtons.forEach((button,index)=>{
+  if(savedStickers.includes(index)){button.classList.add('collected');button.setAttribute('aria-pressed','true')}
+  button.addEventListener('click',()=>{
+    const collected=button.classList.toggle('collected');
+    button.setAttribute('aria-pressed',String(collected));
+    button.classList.remove('stamp-hit');
+    void button.offsetWidth;
+    if(collected)button.classList.add('stamp-hit');
+    updateStickerCount();
+  });
+});
+let previousStickerCount=stickerButtons.filter(b=>b.classList.contains('collected')).length;
 function showAlbumCelebration(){const modal=document.querySelector('#album-celebration');if(!modal)return;modal.hidden=false;document.body.classList.add('celebration-open');document.querySelector('#close-celebration')?.focus()}
 function closeAlbumCelebration(){const modal=document.querySelector('#album-celebration');if(modal)modal.hidden=true;document.body.classList.remove('celebration-open')}
 document.querySelector('#close-celebration')?.addEventListener('click',closeAlbumCelebration);
 document.querySelector('#album-celebration')?.addEventListener('click',event=>{if(event.target.id==='album-celebration')closeAlbumCelebration()});
 document.addEventListener('keydown',event=>{if(event.key==='Escape')closeAlbumCelebration()});
-function updateStickerCount(){const count=stickerButtons.filter(b=>b.classList.contains('collected')).length;document.querySelector('#sticker-count').textContent=count;document.querySelector('#sticker-percent').textContent=Math.round(count/stickerButtons.length*100)+'%';document.querySelector('#sticker-progress').style.width=count/stickerButtons.length*100+'%';localStorage.setItem('pp-stickers',JSON.stringify(stickerButtons.map((b,i)=>b.classList.contains('collected')?i:null).filter(v=>v!==null)));if(count===stickerButtons.length&&previousStickerCount<stickerButtons.length&&localStorage.getItem('pp-album-celebrated')!=='true'){localStorage.setItem('pp-album-celebrated','true');showAlbumCelebration()}previousStickerCount=count}
+function updateStickerCount(){
+  const count=stickerButtons.filter(b=>b.classList.contains('collected')).length,total=stickerButtons.length;
+  document.querySelector('#sticker-count').textContent=count;
+  document.querySelector('#sticker-percent').textContent=Math.round(count/total*100)+'%';
+  document.querySelector('#sticker-progress').style.width=count/total*100+'%';
+  localStorage.setItem('pp-stickers',JSON.stringify(stickerButtons.map((b,i)=>b.classList.contains('collected')?i:null).filter(v=>v!==null)));
+  if(count===total&&previousStickerCount<total&&localStorage.getItem('pp-album-celebrated')!=='true'){localStorage.setItem('pp-album-celebrated','true');showAlbumCelebration()}
+  if(count<total)localStorage.removeItem('pp-album-celebrated');
+  previousStickerCount=count;
+}
 updateStickerCount();
+
+// Mini game: encontre o ingresso dourado.
+(()=>{
+  const game=document.querySelector('#ticket-game'),status=document.querySelector('#discovery-game-status'),replay=document.querySelector('#discovery-replay');
+  if(!game||!status||!replay)return;
+  let winningTicket=0,played=false;
+  const choices=[...game.querySelectorAll('.ticket-choice')];
+  function resetGame(){
+    winningTicket=Math.floor(Math.random()*choices.length);played=false;
+    choices.forEach((button,i)=>{button.disabled=false;button.classList.remove('ticket-win','ticket-miss');button.querySelector('span').textContent=['✦','♫','★'][i]});
+    status.textContent='ESCOLHA SEU INGRESSO.';
+    replay.hidden=true;
+  }
+  choices.forEach((button,index)=>button.addEventListener('click',()=>{
+    if(played)return;played=true;
+    choices.forEach((item,i)=>{
+      item.disabled=true;
+      if(i===winningTicket){item.classList.add('ticket-win');item.querySelector('span').textContent='✹'}
+      else item.classList.add('ticket-miss');
+    });
+    status.textContent=index===winningTicket?'VOCÊ ENCONTROU O INGRESSO DOURADO! ✨':'QUASE! O INGRESSO DOURADO ESTAVA NO '+(winningTicket+1)+'º TICKET.';
+    replay.hidden=false;
+  }));
+  replay.addEventListener('click',resetGame);
+  resetGame();
+})();
 // Brindes: checklist persistente.
 const giftChecks=[...document.querySelectorAll('[data-gift]')];const savedGifts=JSON.parse(localStorage.getItem('pp-gifts')||'[]');giftChecks.forEach(input=>{input.checked=savedGifts.includes(input.dataset.gift);input.addEventListener('change',()=>{const checked=giftChecks.filter(item=>item.checked).map(item=>item.dataset.gift);localStorage.setItem('pp-gifts',JSON.stringify(checked));document.querySelector('#gift-count').textContent=checked.length})});document.querySelector('#gift-count').textContent=giftChecks.filter(i=>i.checked).length;
 // Criador de avatar v2: bola de chiclete em SVG.
