@@ -4,7 +4,14 @@ const filters=document.querySelectorAll('.filter');const cards=document.querySel
 const menuToggle=document.querySelector('.menu-toggle'),mainNav=document.querySelector('.main-nav');if(menuToggle&&mainNav){menuToggle.addEventListener('click',()=>{const open=mainNav.classList.toggle('open');menuToggle.setAttribute('aria-expanded',String(open))});mainNav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{mainNav.classList.remove('open');menuToggle.setAttribute('aria-expanded','false')}))}
 const toast=document.querySelector('.toast');let toastTimer;document.querySelectorAll('.collect-card').forEach(card=>{card.setAttribute('tabindex','0');card.setAttribute('role','button');const show=()=>{toast.textContent='Em breve: '+card.querySelector('h3').textContent+' — coleção demonstrativa.';toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2600)};card.addEventListener('click',show);card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();show()}});});
 // Álbum: progresso de figurinhas salvo no navegador.
-const stickerButtons=[...document.querySelectorAll('.sticker-slot button')];const savedStickers=JSON.parse(localStorage.getItem('pp-stickers')||'[]');stickerButtons.forEach((button,index)=>{if(savedStickers.includes(index)){button.classList.add('collected');button.setAttribute('aria-pressed','true')}button.addEventListener('click',()=>{button.classList.toggle('collected');button.setAttribute('aria-pressed',String(button.classList.contains('collected')));updateStickerCount()})});function updateStickerCount(){const count=stickerButtons.filter(b=>b.classList.contains('collected')).length;document.querySelector('#sticker-count').textContent=count;document.querySelector('#sticker-percent').textContent=Math.round(count/stickerButtons.length*100)+'%';document.querySelector('#sticker-progress').style.width=count/stickerButtons.length*100+'%';localStorage.setItem('pp-stickers',JSON.stringify(stickerButtons.map((b,i)=>b.classList.contains('collected')?i:null).filter(v=>v!==null)))}updateStickerCount();
+const stickerButtons=[...document.querySelectorAll('.sticker-slot button')];const savedStickers=JSON.parse(localStorage.getItem('pp-stickers')||'[]');stickerButtons.forEach((button,index)=>{if(savedStickers.includes(index)){button.classList.add('collected');button.setAttribute('aria-pressed','true')}button.addEventListener('click',()=>{button.classList.toggle('collected');button.setAttribute('aria-pressed',String(button.classList.contains('collected')));updateStickerCount()})});let previousStickerCount=stickerButtons.filter(b=>b.classList.contains('collected')).length;
+function showAlbumCelebration(){const modal=document.querySelector('#album-celebration');if(!modal)return;modal.hidden=false;document.body.classList.add('celebration-open');document.querySelector('#close-celebration')?.focus()}
+function closeAlbumCelebration(){const modal=document.querySelector('#album-celebration');if(modal)modal.hidden=true;document.body.classList.remove('celebration-open')}
+document.querySelector('#close-celebration')?.addEventListener('click',closeAlbumCelebration);
+document.querySelector('#album-celebration')?.addEventListener('click',event=>{if(event.target.id==='album-celebration')closeAlbumCelebration()});
+document.addEventListener('keydown',event=>{if(event.key==='Escape')closeAlbumCelebration()});
+function updateStickerCount(){const count=stickerButtons.filter(b=>b.classList.contains('collected')).length;document.querySelector('#sticker-count').textContent=count;document.querySelector('#sticker-percent').textContent=Math.round(count/stickerButtons.length*100)+'%';document.querySelector('#sticker-progress').style.width=count/stickerButtons.length*100+'%';localStorage.setItem('pp-stickers',JSON.stringify(stickerButtons.map((b,i)=>b.classList.contains('collected')?i:null).filter(v=>v!==null)));if(count===stickerButtons.length&&previousStickerCount<stickerButtons.length&&localStorage.getItem('pp-album-celebrated')!=='true'){localStorage.setItem('pp-album-celebrated','true');showAlbumCelebration()}previousStickerCount=count}
+updateStickerCount();
 // Brindes: checklist persistente.
 const giftChecks=[...document.querySelectorAll('[data-gift]')];const savedGifts=JSON.parse(localStorage.getItem('pp-gifts')||'[]');giftChecks.forEach(input=>{input.checked=savedGifts.includes(input.dataset.gift);input.addEventListener('change',()=>{const checked=giftChecks.filter(item=>item.checked).map(item=>item.dataset.gift);localStorage.setItem('pp-gifts',JSON.stringify(checked));document.querySelector('#gift-count').textContent=checked.length})});document.querySelector('#gift-count').textContent=giftChecks.filter(i=>i.checked).length;
 // Criador de avatar v2: bola de chiclete em SVG.
@@ -101,15 +108,53 @@ function build(){
     g.appendChild(row);controls.appendChild(g);
   });
   const actions=document.createElement('div');actions.className='avatar-actions';
-  actions.innerHTML='<button type="button" class="button button-ghost" id="avatar-random">SORTEAR ↻</button><button type="button" class="button button-yellow" id="avatar-save">SALVAR ↗</button><button type="button" class="button button-yellow" id="avatar-download">BAIXAR PNG ↓</button>';
+  actions.innerHTML='<button type="button" class="button button-ghost" id="avatar-random">SORTEAR ↻</button><button type="button" class="button button-yellow" id="avatar-save">SALVAR ↗</button><button type="button" class="button button-yellow" id="avatar-download">BAIXAR PNG ↓</button><button type="button" class="button button-ghost" id="avatar-share">COMPARTILHAR ↗</button>';
   controls.appendChild(actions);
   $('#avatar-random').onclick=()=>{const pick=a=>a[Math.floor(Math.random()*a.length)];
     Object.entries(OPTS).forEach(([k,[,items]])=>state[k]=pick(items)[0]);state.color=pick(COLORS);state.bg=pick(BGS);sync();feedback.textContent='SORTEADO! NÃO GOSTOU? SORTEIE DE NOVO.'};
   $('#avatar-save').onclick=()=>{localStorage.setItem('pp-avatar-v2',JSON.stringify(state));feedback.textContent='AVATAR SALVO NESTE NAVEGADOR. SUA IDENTIDADE ESTÁ CRIADA!'};
-  $('#avatar-download').onclick=download;
+  $('#avatar-download').onclick=download;$('#avatar-share').onclick=shareAvatar;
 }
-function download(){
-  const url=URL.createObjectURL(new Blob([svg(state,720)],{type:'image/svg+xml'})),img=new Image();
+function createAvatarPng(){
+  return new Promise((resolve,reject)=>{
+    const url=URL.createObjectURL(new Blob([svg(state,720)],{type:'image/svg+xml'})),img=new Image();
+    img.onload=()=>{
+      const c=document.createElement('canvas');c.width=c.height=800;const x=c.getContext('2d');
+      x.fillStyle=state.bg;x.fillRect(0,0,800,800);x.drawImage(img,40,10,720,720);
+      x.fillStyle=INK;x.textAlign='center';x.font='34px "Archivo Black","Arial Black",sans-serif';
+      x.fillText((state.name.trim()||'PING PONG').toUpperCase(),400,765);
+      x.font='16px "DM Sans",Arial,sans-serif';x.fillText(serial(state)+' · '+rarity(state),400,788);
+      c.toBlob(blob=>{URL.revokeObjectURL(url);if(blob)resolve(blob);else reject(new Error('Não foi possível gerar o PNG.'))},'image/png');
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Não foi possível montar a imagem.'))};
+    img.src=url;
+  });
+}
+async function download(){
+  try{
+    const blob=await createAvatarPng(),url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.download='meu-avatar-ping-pong.png';a.href=url;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    feedback.textContent='PNG BAIXADO!';
+  }catch(error){feedback.textContent='NÃO FOI POSSÍVEL GERAR A IMAGEM. TENTE NOVAMENTE.'}
+}
+async function shareAvatar(){
+  try{
+    const blob=await createAvatarPng();
+    const file=new File([blob],'meu-avatar-ping-pong.png',{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
+      await navigator.share({files:[file],title:'Meu avatar Ping Pong Collection',text:'Olha o avatar que criei na Ping Pong Collection!'});
+      feedback.textContent='AVATAR PRONTO PARA COMPARTILHAR!';
+      return;
+    }
+    const url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.download='meu-avatar-ping-pong.png';a.href=url;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    const shareText='Criei meu avatar na Ping Pong Collection! '+location.href+'#avatar';
+    if(navigator.share)await navigator.share({title:'Meu avatar Ping Pong Collection',text:shareText});
+    else if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(shareText);feedback.textContent='PNG BAIXADO E LINK COPIADO! ANEXE A IMAGEM PARA COMPARTILHAR.';return}
+    feedback.textContent='PNG BAIXADO! ANEXE A IMAGEM ONDE QUISER COMPARTILHAR.';
+  }catch(error){if(error.name!=='AbortError')feedback.textContent='NÃO FOI POSSÍVEL COMPARTILHAR. TENTE BAIXAR O PNG.'}
+}
+
   img.onload=()=>{
     const c=document.createElement('canvas');c.width=c.height=800;const x=c.getContext('2d');
     x.fillStyle=state.bg;x.fillRect(0,0,800,800);x.drawImage(img,40,10,720,720);
