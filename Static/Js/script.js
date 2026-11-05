@@ -154,18 +154,6 @@ async function shareAvatar(){
     feedback.textContent='PNG BAIXADO! ANEXE A IMAGEM ONDE QUISER COMPARTILHAR.';
   }catch(error){if(error.name!=='AbortError')feedback.textContent='NÃO FOI POSSÍVEL COMPARTILHAR. TENTE BAIXAR O PNG.'}
 }
-
-  img.onload=()=>{
-    const c=document.createElement('canvas');c.width=c.height=800;const x=c.getContext('2d');
-    x.fillStyle=state.bg;x.fillRect(0,0,800,800);x.drawImage(img,40,10,720,720);
-    x.fillStyle=INK;x.textAlign='center';x.font='34px "Archivo Black","Arial Black",sans-serif';
-    x.fillText((state.name.trim()||'PING PONG').toUpperCase(),400,765);
-    x.font='16px "DM Sans",Arial,sans-serif';x.fillText(serial(state)+' · '+rarity(state),400,788);
-    const a=document.createElement('a');a.download='meu-avatar-ping-pong.png';a.href=c.toDataURL('image/png');a.click();URL.revokeObjectURL(url);
-    feedback.textContent='PNG BAIXADO!';
-  };
-  img.src=url;
-}
 nameInput.value=state.name||'';
 nameInput.addEventListener('input',e=>{state.name=e.target.value;sync()});
 build();sync();
