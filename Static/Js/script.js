@@ -190,13 +190,32 @@ const revealTargets=document.querySelectorAll('.collect-card,.rarity-card,.featu
   ];
   const $=s=>document.querySelector(s), gallery=$('#beat-card-gallery'), modal=$('#beat-card-modal'), wrap=$('#beat-modal-card-wrap');
   if(!gallery||!modal)return;
-  const photos=(()=>{try{return JSON.parse(localStorage.getItem('pp-photos')||'{}')}catch(e){return {}}})();
+  const photoFiles={
+    1:'joao-gomes.jpeg',
+    2:'lola-young.jpeg',
+    3:'duquesa.jpeg',
+    4:'luisa-sonza.jpeg',
+    5:'zara-larsson.jpeg',
+    6:'halsey.jpeg',
+    7:'demi-lovato.jpeg',
+    8:'mgk.jpeg',
+    9:'j-balvin.jpeg',
+    10:'calvin-harris.jpeg',
+    11:'maroon-5.jpeg',
+    12:'ne-yo.jpeg',
+    13:'black-eyed-peas.jpeg',
+    14:'nelly.jpeg',
+    15:'ivete-sangalo.jpeg',
+    16:'elton-john.jpeg',
+    17:'gilberto-gil.jpeg',
+    18:'rod-stewart.jpeg'
+  };
   let selected=0;
   const pad=n=>String(n).padStart(2,'0');
   const initials=name=>name.split(/\s+/).map(p=>p[0]).slice(0,2).join('').toUpperCase();
   const esc=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   function face(a,back=false,large=false){
-    const n=pad(a.n),photo=photos[a.n]?'<img src="'+photos[a.n]+'" alt="Foto de '+esc(a.name)+'">':'<span class="beat-card-initials">'+initials(a.name)+'</span>';
+    const n=pad(a.n),file=photoFiles[a.n],photo=file?'<img src="Static/Images/'+file+'" alt="Foto de '+esc(a.name)+'" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="beat-card-initials" hidden>'+initials(a.name)+'</span>':'<span class="beat-card-initials">'+initials(a.name)+'</span>';
     if(!back)return '<div class="beat-card-face beat-card-front"><div class="beat-card-face-inner" style="--c1:'+a.c1+';--c2:'+a.c2+';--c3:'+a.c3+'"><div class="beat-card-holo"></div><div class="beat-card-front-content"><div class="beat-card-topline"><span>PING●PONG</span><span>'+n+'/18</span></div><div class="beat-card-photo">'+photo+'</div><span class="beat-card-genre">'+esc(a.genre)+'</span><div class="beat-card-song">'+esc(a.song)+'</div><h4 class="beat-card-artist">'+esc(a.name)+'</h4><div class="beat-card-motif">'+esc(a.motif)+'</div><div class="beat-card-footer"><span>BEAT SERIES</span><span>✦ LIMITED ✦</span></div></div></div></div>';
     return '<div class="beat-card-face beat-card-back"><div class="beat-card-face-inner" style="--c1:'+a.c1+';--c2:'+a.c2+';--c3:'+a.c3+'"><div class="beat-card-holo"></div><div class="beat-card-back-content"><div class="beat-card-back-brand">PING●PONG / BEAT SERIES</div><h4 class="beat-card-back-name">'+esc(a.name)+'</h4><span class="beat-card-back-genre">'+esc(a.genre)+'</span><p class="beat-card-back-song">'+esc(a.song)+'</p><p class="beat-card-quote">“'+esc(a.quote)+'”</p><p class="beat-card-bio">'+esc(a.bio)+'</p><div class="beat-card-qr-row"><div class="beat-card-qr" data-qr></div><div class="beat-card-qr-label"><strong>SCAN & PLAY</strong>OUÇA A PLAYLIST<br>BEAT STATION</div></div><div class="beat-card-footer"><span>COLLECTIBLE MUSIC CARD</span><span>'+n+'/18</span></div></div></div></div>';
   }
@@ -228,25 +247,6 @@ const revealTargets=document.querySelectorAll('.collect-card,.rarity-card,.featu
   modal.addEventListener('click',e=>{if(e.target.closest('[data-beat-close]'))closeModal()});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)closeModal()});
   $('#beat-flip').addEventListener('click',()=>wrap.querySelector('.beat-card-tile')?.classList.toggle('is-flipped'));
-  $('#beat-photo-upload').addEventListener('change',async e=>{
-    const file=e.target.files?.[0];if(!file)return;
-    if(!file.type.startsWith('image/')){ $('#beat-modal-hint').textContent='Escolha um arquivo de imagem.';return;}
-    try{
-      const data=await new Promise((resolve,reject)=>{
-        const reader=new FileReader();reader.onerror=reject;reader.onload=()=>{
-          const img=new Image();img.onerror=reject;img.onload=()=>{
-            const canvas=document.createElement('canvas'),size=420;canvas.width=canvas.height=size;
-            const scale=Math.max(size/img.width,size/img.height),w=img.width*scale,h=img.height*scale;
-            canvas.getContext('2d').drawImage(img,(size-w)/2,(size-h)/2,w,h);
-            resolve(canvas.toDataURL('image/jpeg',.72));
-          };img.src=reader.result;
-        };reader.readAsDataURL(file);
-      });
-      photos[selected]=data;localStorage.setItem('pp-photos',JSON.stringify(photos));
-      openCard(selected);$('#beat-modal-hint').textContent='FOTO SALVA NESTE NAVEGADOR!';
-    }catch(err){$('#beat-modal-hint').textContent='Não foi possível salvar. Tente uma imagem menor.';}
-    e.target.value='';
-  });
   async function renderFaces(){
     if(!window.html2canvas)throw new Error('A ferramenta de imagem ainda está carregando. Atualize a página e tente novamente.');
     const tile=wrap.querySelector('.beat-card-tile');
