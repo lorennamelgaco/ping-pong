@@ -10,6 +10,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="Static/Css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
   <script src="Static/Js/script.js" defer></script>
 </head>
 <body>
@@ -102,7 +104,31 @@
       <div class="quiz-box"><div class="quiz-top"><span id="quiz-category">DESAFIO MUSICAL</span><span id="quiz-progress">PERGUNTA 1 / 4</span></div><h3 id="quiz-question">Carregando pergunta...</h3><div class="quiz-options" id="quiz-options"></div><div class="quiz-feedback" id="quiz-feedback" aria-live="polite"></div><button class="button button-dark" id="quiz-next" type="button" disabled>PRÓXIMA PERGUNTA →</button></div>
     </section>
 
-    <section class="playlist-section" id="playlist"><div class="playlist-copy"><p class="eyebrow">06 / DÊ O PLAY NA NOSTALGIA</p><h2>BEAT<br><em>STATION.</em></h2><p>Uma trilha sonora para acompanhar suas descobertas. Abra nossa playlist e leve a vibe Ping Pong com você.</p><a class="button button-yellow" href="https://open.spotify.com/playlist/7lf8JbBcPKjFRzCZlkMv5m" target="_blank" rel="noopener">ABRIR NO SPOTIFY ↗</a><small>Ou dê o play diretamente por aqui.</small></div><div class="spotify-player"><iframe title="Playlist Ping Pong Collection no Spotify" src="https://open.spotify.com/embed/playlist/7lf8JbBcPKjFRzCZlkMv5m?utm_source=generator&theme=0" width="100%" height="352" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div></section>
+    <section class="playlist-section" id="playlist"><div class="playlist-copy"><p class="eyebrow">06 / DÊ O PLAY NA NOSTALGIA</p><h2>BEAT<br><em>STATION.</em></h2><p>Uma trilha sonora para acompanhar suas descobertas. Abra nossa playlist e leve a vibe Ping Pong com você.</p><a class="button button-yellow" href="https://open.spotify.com/playlist/7lf8JbBcPKjFRzCZlkMv5m" target="_blank" rel="noopener">ABRIR NO SPOTIFY ↗</a><small>Ou dê o play diretamente por aqui.</small></div><div class="spotify-player"><iframe title="Playlist Ping Pong Collection no Spotify" src="https://open.spotify.com/embed/playlist/7lf8JbBcPKjFRzCZlkMv5m?utm_source=generator&theme=0" width="100%" height="352" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+      <div class="beat-cards-intro">
+        <div><p class="eyebrow">18 FAIXAS. 18 HISTÓRIAS.</p><h3>COLEÇÃO <em>BEAT CARDS.</em></h3></div>
+        <p>Vire cada card, descubra a história por trás da música e escaneie o QR Code para abrir a playlist oficial da Beat Station.</p>
+      </div>
+      <div class="beat-cards-toolbar"><span><b>18</b> CARDS COLECIONÁVEIS</span><span>CLIQUE PARA VIRAR · AMPLIE PARA SALVAR OU IMPRIMIR</span></div>
+      <div class="beat-card-gallery" id="beat-card-gallery" aria-label="Coleção de 18 cards musicais"></div>
+      <p class="beat-card-note">As fotos são personalizáveis neste navegador. Se ainda não tiver as imagens, os cards aparecem com iniciais e identidade visual própria.</p>
+      <div class="beat-card-modal" id="beat-card-modal" hidden role="dialog" aria-modal="true" aria-labelledby="beat-modal-title">
+        <div class="beat-modal-backdrop" data-beat-close></div>
+        <div class="beat-modal-panel">
+          <button class="beat-modal-close" type="button" data-beat-close aria-label="Fechar">×</button>
+          <div class="beat-modal-heading"><span class="eyebrow">PING PONG COLLECTION / BEAT SERIES</span><h3 id="beat-modal-title">CARD <em>01/18</em></h3></div>
+          <div class="beat-modal-card-wrap" id="beat-modal-card-wrap"></div>
+          <div class="beat-modal-actions">
+            <button type="button" class="button button-ghost" id="beat-flip">VIRAR CARD ↻</button>
+            <label class="button button-ghost beat-upload-label" for="beat-photo-upload">ADICIONAR FOTO ↑</label>
+            <input id="beat-photo-upload" type="file" accept="image/*" hidden>
+            <button type="button" class="button button-yellow" id="beat-download">SALVAR PNG ↓</button>
+            <button type="button" class="button button-yellow" id="beat-print">IMPRIMIR CARD ↗</button>
+          </div>
+          <p class="beat-modal-hint" id="beat-modal-hint" aria-live="polite">O PNG inclui frente e verso. A impressão prepara os dois lados para recorte.</p>
+        </div>
+      </div>
+    </section>
 
     <section class="facts-section" id="curiosidades"><div class="section-heading"><div><p class="eyebrow pink-text">07 / VOCÊ SABIA?</p><h2>FATOS QUE<br><em>MARCA(RAM).</em></h2></div><p class="section-note">Um pouco da trajetória de Ping Pong e da memória afetiva que atravessa gerações.</p></div><div class="facts-grid"><article class="fact-card fact-pink"><span>01 / ORIGEM</span><strong>1945</strong><h3>UMA HISTÓRIA QUE COMEÇA</h3><p>O chiclete Ping Pong é associado a uma longa história no imaginário brasileiro, atravessando gerações.</p></article><article class="fact-card fact-yellow"><span>02 / COLECIONAR</span><strong>✳</strong><h3>MAIS QUE UM CHICLETE</h3><p>As figurinhas e os colecionáveis ajudaram a transformar a experiência em brincadeira, descoberta e troca.</p></article><article class="fact-card fact-blue"><span>03 / NOVA GERAÇÃO</span><strong>∞</strong><h3>DO FÍSICO AO DIGITAL</h3><p>A proposta Ping Pong Collection reinventa esse espírito com cards, avatares e experiências conectadas.</p></article></div><p class="demo-caption">* Conteúdo conceitual baseado na história apresentada no projeto. Dados históricos podem ser complementados com fontes na apresentação.</p></section>
     <section class="rarity-section">
