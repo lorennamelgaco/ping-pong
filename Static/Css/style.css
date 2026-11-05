@@ -129,3 +129,41 @@
 .beat-card-photo-img-15,
 .beat-card-photo-img-16,
 .beat-card-photo-img-18{object-position:center top}
+
+
+/* PASSAPORTE MUSICAL — álbum em estilo carimbo */
+.album-section{grid-template-columns:.72fr 1.28fr;align-items:center}
+.passport-caption{margin-top:30px;font:800 9px var(--body);letter-spacing:2px;color:var(--pink)}
+.passport-book{position:relative;padding:22px 24px 18px;background:#e9dfc9;border:1px solid #c7b99d;border-radius:5px;box-shadow:12px 14px 0 #00000020,0 4px 18px #00000012;transform:rotate(.6deg);overflow:hidden}
+.passport-book:before{content:"";position:absolute;inset:8px;border:1px solid #b8a98c;pointer-events:none}
+.passport-book-header,.passport-book-footer{position:relative;display:flex;justify-content:space-between;align-items:center;gap:10px;color:#65583f;font:800 8px monospace;letter-spacing:1.4px}
+.passport-book-header{padding:3px 4px 15px;border-bottom:1px dashed #b8a98c}
+.passport-book-header span:first-child{font:20px var(--display);letter-spacing:2px}
+.passport-stamps{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px 10px;padding:22px 5px}
+.festival-stamp{position:relative;min-width:0;min-height:145px;padding:8px 2px;border:0;background:transparent;cursor:pointer;color:#a29a89;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;transition:transform .2s ease}
+.festival-stamp:nth-child(3n){transform:rotate(2deg)}.festival-stamp:nth-child(3n+1){transform:rotate(-2deg)}
+.stamp-ring{width:112px;height:112px;max-width:100%;border:3px double currentColor;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;opacity:.43;filter:grayscale(1);transition:opacity .25s,color .25s,filter .25s;position:relative}
+.stamp-ring:before,.stamp-ring:after{content:"";position:absolute;inset:5px;border:1px dashed currentColor;border-radius:50%}
+.stamp-ring b{font:800 9px monospace;letter-spacing:1px}.stamp-ring strong{font:clamp(13px,1.3vw,18px)/.95 var(--display);text-align:center;margin:4px 0}.stamp-ring small{font:700 6px monospace;letter-spacing:.8px;text-align:center}.stamp-ring i{font:10px monospace;font-style:normal;margin-top:5px}
+.stamp-blue{color:#27718c}.stamp-yellow{color:#a07c1e}.stamp-purple{color:#76549a}.stamp-green{color:#3e7950}.stamp-red{color:#a94442}.stamp-orange{color:#ad632d}.stamp-dark{color:#41434c}
+.stamp-date{font:700 7px monospace;letter-spacing:.7px;color:#82765f;text-align:center}
+.festival-stamp:hover{transform:translateY(-4px) rotate(0)!important}.festival-stamp:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+.festival-stamp.collected .stamp-ring{opacity:1;filter:none;text-shadow:0 0 1px currentColor;box-shadow:0 0 0 2px #a44b4430}
+.festival-stamp.collected .stamp-date{color:#5c4b36}
+.festival-stamp.stamp-hit .stamp-ring{animation:passportStamp .58s cubic-bezier(.2,1.5,.35,1) both}
+@keyframes passportStamp{0%{transform:scale(2.1) rotate(-18deg);opacity:0;filter:blur(2px)}55%{transform:scale(.88) rotate(5deg);opacity:1;filter:blur(0)}78%{transform:scale(1.08) rotate(-2deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+.passport-book-footer{padding:12px 4px 2px;border-top:1px dashed #b8a98c}
+.sticker-hint{grid-column:2;margin-top:-25px}
+.discovery-game{margin-top:55px;padding:30px 34px;background:#f2eee7;border:1px solid #d9d2c7;display:grid;grid-template-columns:.85fr 1.15fr;gap:24px 35px;align-items:center;box-shadow:8px 8px 0 #00000012}
+.discovery-game-copy h3{font:clamp(24px,3vw,36px)/1 var(--display);margin:10px 0}.discovery-game-copy h3 em{font-style:normal;color:var(--pink)}.discovery-game-copy>p:not(.eyebrow){font-size:12px;line-height:1.7;color:#625e58}.discovery-game-status{display:block;margin-top:18px;font:800 9px var(--body);letter-spacing:1px;color:var(--pink);min-height:18px}
+.ticket-game{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ticket-choice{min-height:130px;border:2px dashed #1a1a1a;background:#fff;padding:14px 7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:transform .2s,background .2s;position:relative}
+.ticket-choice:before,.ticket-choice:after{content:"";position:absolute;top:50%;width:13px;height:13px;border-radius:50%;background:#f2eee7;transform:translateY(-50%)}.ticket-choice:before{left:-8px}.ticket-choice:after{right:-8px}
+.ticket-choice span{font-size:29px;color:var(--pink)}.ticket-choice b{font:12px var(--display);letter-spacing:1px}.ticket-choice small{font:8px monospace;color:#777}
+.ticket-choice:hover:not(:disabled){transform:translateY(-5px) rotate(-2deg);background:#fff9d9}
+.ticket-choice.ticket-win{background:var(--yellow);border:2px solid var(--black);animation:ticketReveal .45s cubic-bezier(.2,1.5,.4,1) both}.ticket-choice.ticket-win span{color:var(--pink);font-size:40px}
+.ticket-choice.ticket-miss{opacity:.45;transform:scale(.96)}.ticket-choice:disabled{cursor:default}
+@keyframes ticketReveal{0%{transform:scale(.7) rotate(-8deg)}65%{transform:scale(1.08) rotate(3deg)}100%{transform:scale(1) rotate(0)}}
+.discovery-replay{grid-column:2;justify-self:center;border:0;cursor:pointer}.discovery-replay[hidden]{display:none}
+@media(max-width:850px){.album-section{grid-template-columns:1fr}.sticker-hint{grid-column:1;margin-top:0}.passport-stamps{grid-template-columns:repeat(2,minmax(0,1fr))}.stamp-ring{width:105px;height:105px}.discovery-game{grid-template-columns:1fr}.discovery-replay{grid-column:1}}
+@media(prefers-reduced-motion:reduce){.festival-stamp.stamp-hit .stamp-ring,.ticket-choice.ticket-win{animation:none!important}}
