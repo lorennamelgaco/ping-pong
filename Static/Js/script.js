@@ -158,8 +158,87 @@ nameInput.value=state.name||'';
 nameInput.addEventListener('input',e=>{state.name=e.target.value;sync()});
 build();sync();
 })();
-// Quiz com dois temas e quatro perguntas por rodada.
-const quizData={music:{label:'DESAFIO MUSICAL',questions:[{q:'Qual destes elementos costuma fazer parte de uma playlist?',a:['Faixas musicais','Figurinhas','Chaveiros','Posters'],correct:0,why:'Uma playlist reúne músicas para ouvir em sequência.'},{q:'Qual plataforma de streaming aparece nesta experiência?',a:['Spotify','Calculadora','Bloco de notas','Agenda'],correct:0,why:'A área Beat Station foi pensada para integrar uma playlist do Spotify.'},{q:'Qual destes gêneros é ligado à cultura urbana?',a:['Hip-hop','Ópera barroca','Música medieval','Canto gregoriano'],correct:0,why:'O hip-hop é uma das expressões culturais urbanas que inspiram o projeto.'},{q:'O que combina com a proposta Beat Station?',a:['Música e identidade','Controle de estoque','Receitas culinárias','Manual de montagem'],correct:0,why:'A proposta conecta música, arte e identidade.'}]},brand:{label:'DESAFIO PING PONG',questions:[{q:'Em que ano, segundo a história apresentada no projeto, Ping Pong foi lançado?',a:['1945','1960','1985','2001'],correct:0,why:'O contexto histórico do projeto apresenta 1945 como ano de lançamento.'},{q:'O que acompanhava a experiência clássica da marca?',a:['Figurinhas e colecionáveis','Aplicativo de banco','Jogos online','Ingressos de cinema'],correct:0,why:'As figurinhas e colecionáveis faziam parte da experiência de descoberta e troca.'},{q:'Qual era uma das brincadeiras ligadas às coleções?',a:['Trocar figurinhas','Montar computadores','Fazer chamadas','Editar vídeos'],correct:0,why:'Trocar e completar coleções fazia parte da diversão.'},{q:'O que a nova Ping Pong Collection propõe?',a:['Levar a nostalgia ao universo digital','Apagar as coleções antigas','Vender apenas roupas','Substituir música por esportes'],correct:0,why:'A ideia é atualizar o legado com cards, avatares e experiências digitais.'}]}};let quizType='music',quizIndex=0,quizScore=0,answered=false,finished=false;const qEl=document.querySelector('#quiz-question'),optsEl=document.querySelector('#quiz-options'),feedbackEl=document.querySelector('#quiz-feedback'),nextEl=document.querySelector('#quiz-next');function renderQuiz(){const data=quizData[quizType],q=data.questions[quizIndex];document.querySelector('#quiz-category').textContent=data.label;document.querySelector('#quiz-progress').textContent='PERGUNTA '+(quizIndex+1)+' / '+data.questions.length;qEl.textContent=q.q;optsEl.innerHTML='';feedbackEl.textContent='';nextEl.disabled=true;nextEl.textContent=quizIndex===data.questions.length-1?'VER RESULTADO ↗':'PRÓXIMA PERGUNTA →';answered=false;finished=false;q.a.forEach((answer,i)=>{const b=document.createElement('button');b.className='quiz-option';b.textContent=String.fromCharCode(65+i)+'. '+answer;b.addEventListener('click',()=>answerQuiz(i));optsEl.appendChild(b)})}function answerQuiz(index){if(answered)return;answered=true;const q=quizData[quizType].questions[quizIndex];[...optsEl.children].forEach((b,i)=>{b.disabled=true;if(i===q.correct)b.classList.add('correct');if(i===index&&i!==q.correct)b.classList.add('wrong')});if(index===q.correct){quizScore++;feedbackEl.textContent='ACERTOU! '+q.why}else feedbackEl.textContent='QUASE! '+q.why;nextEl.disabled=false}nextEl.addEventListener('click',()=>{if(finished){quizIndex=0;quizScore=0;renderQuiz();return}if(!answered)return;if(quizIndex<quizData[quizType].questions.length-1){quizIndex++;renderQuiz()}else{qEl.textContent='VOCÊ FEZ '+quizScore+' DE '+quizData[quizType].questions.length+' PONTOS!';optsEl.innerHTML='';feedbackEl.textContent=quizScore===4?'PERFEITO! VOCÊ DOMINA ESSA VIBE.':'BOA! CONTINUE EXPLORANDO O UNIVERSO PING PONG.';nextEl.textContent='JOGAR NOVAMENTE ↻';nextEl.disabled=false;finished=true}});document.querySelectorAll('.quiz-tab').forEach(tab=>tab.addEventListener('click',()=>{document.querySelectorAll('.quiz-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');quizType=tab.dataset.quiz;quizIndex=0;quizScore=0;renderQuiz()}));renderQuiz();
+// Quiz musical com 36 perguntas (duas por artista) + quiz da marca.
+const quizData={
+  music:{label:'QUIZ MUSICAL',questions:[
+    {artist:'JOÃO GOMES',q:'Qual estilo musical está fortemente associado a João Gomes?',a:['Rock','Piseiro e forró','Música clássica','Reggae'],correct:1,why:'João Gomes ganhou destaque com o piseiro e o forró.'},
+    {artist:'JOÃO GOMES',q:'Qual música ajudou a projetar João Gomes nacionalmente?',a:['Meu Pedaço de Pecado','Evidências','Anna Júlia','Garota de Ipanema'],correct:0,why:'“Meu Pedaço de Pecado” foi um dos grandes hits que impulsionaram sua carreira.'},
+    {artist:'LOLA YOUNG',q:'Qual é a nacionalidade de Lola Young?',a:['Brasileira','Americana','Britânica','Canadense'],correct:2,why:'Lola Young é uma cantora britânica, nascida em Londres.'},
+    {artist:'LOLA YOUNG',q:'Qual música de Lola Young ganhou grande destaque internacional?',a:['Messy','Flowers','Levitating','Havana'],correct:0,why:'“Messy” se tornou um sucesso internacional.'},
+    {artist:'DUQUESA',q:'Duquesa é conhecida principalmente por qual estilo musical?',a:['Hip-hop e rap','Sertanejo','Samba','Música clássica'],correct:0,why:'A artista se destaca no rap e no hip-hop nacional.'},
+    {artist:'DUQUESA',q:'De qual cidade brasileira é a artista Duquesa?',a:['São Paulo','Feira de Santana','Rio de Janeiro','Curitiba'],correct:1,why:'Duquesa é natural de Feira de Santana, na Bahia.'},
+    {artist:'LUÍSA SONZA',q:'Qual é o principal gênero musical associado à carreira de Luísa Sonza?',a:['Pop','Jazz','Reggae','Country'],correct:0,why:'Luísa Sonza é uma das artistas de destaque do pop brasileiro.'},
+    {artist:'LUÍSA SONZA',q:'Qual é o nome de um dos álbuns de Luísa Sonza?',a:['Escândalo Íntimo','Renaissance','Future Nostalgia','1989'],correct:0,why:'“Escândalo Íntimo” é um álbum de Luísa Sonza.'},
+    {artist:'ZARA LARSSON',q:'Zara Larsson é uma cantora de qual país?',a:['França','Suécia','Itália','Espanha'],correct:1,why:'Zara Larsson nasceu na Suécia.'},
+    {artist:'ZARA LARSSON',q:'Qual música é um dos grandes sucessos de Zara Larsson?',a:['Lush Life','Bad Romance','Halo','Toxic'],correct:0,why:'“Lush Life” é um dos hits mais conhecidos da cantora.'},
+    {artist:'HALSEY',q:'Halsey é conhecida principalmente por qual estilo musical?',a:['Pop e música alternativa','Forró','Samba','Música sertaneja'],correct:0,why:'A sonoridade de Halsey mistura pop com influências alternativas.'},
+    {artist:'HALSEY',q:'Qual destas músicas é de Halsey?',a:['Without Me','Shape of You','Rolling in the Deep','Roar'],correct:0,why:'“Without Me” é um dos grandes sucessos de Halsey.'},
+    {artist:'DEMI LOVATO',q:'Em qual filme musical da Disney Demi Lovato ganhou destaque no início da carreira?',a:['Camp Rock','Frozen','Encanto','High School Musical 3'],correct:0,why:'Demi Lovato estrelou “Camp Rock”, do Disney Channel.'},
+    {artist:'DEMI LOVATO',q:'Qual destas músicas pertence a Demi Lovato?',a:['Sorry Not Sorry','Shake It Off','Bad Guy','Waka Waka'],correct:0,why:'“Sorry Not Sorry” é um sucesso de Demi Lovato.'},
+    {artist:'MGK',q:'MGK é conhecido por misturar principalmente quais estilos musicais?',a:['Rap e rock','Samba e pagode','Forró e sertanejo','Jazz e blues'],correct:0,why:'Machine Gun Kelly transitou do rap para uma sonoridade com forte influência do pop-punk e rock.'},
+    {artist:'MGK',q:'Qual é o nome verdadeiro de MGK?',a:['Colson Baker','Michael George King','Mark Gabriel Kelly','Matthew Gordon King'],correct:0,why:'MGK é o nome artístico de Colson Baker.'},
+    {artist:'J BALVIN',q:'J Balvin é um artista de qual país?',a:['México','Colômbia','Argentina','Brasil'],correct:1,why:'J Balvin é colombiano, nascido em Medellín.'},
+    {artist:'J BALVIN',q:'Qual estilo musical está muito associado a J Balvin?',a:['Reggaeton','Rock clássico','Samba','Country'],correct:0,why:'J Balvin é um dos nomes internacionais do reggaeton.'},
+    {artist:'CALVIN HARRIS',q:'Calvin Harris é conhecido mundialmente como:',a:['DJ e produtor musical','Ator de cinema','Guitarrista de rock','Cantor de ópera'],correct:0,why:'Calvin Harris é DJ, produtor e compositor.'},
+    {artist:'CALVIN HARRIS',q:'Qual destas músicas é um sucesso de Calvin Harris?',a:['Summer','Perfect','Yellow','Hello'],correct:0,why:'“Summer” é um dos hits de Calvin Harris.'},
+    {artist:'MAROON 5',q:'Qual é o nome do vocalista do Maroon 5?',a:['Adam Levine','Bruno Mars','Justin Timberlake','Harry Styles'],correct:0,why:'Adam Levine é o vocalista do Maroon 5.'},
+    {artist:'MAROON 5',q:'Qual destas músicas pertence ao Maroon 5?',a:['Sugar','Viva La Vida','Numb','Believer'],correct:0,why:'“Sugar” é um dos sucessos do Maroon 5.'},
+    {artist:'NE-YO',q:'Ne-Yo é conhecido principalmente por qual estilo musical?',a:['R&B e pop','Heavy metal','Forró','Música clássica'],correct:0,why:'Ne-Yo é conhecido por seus trabalhos de R&B e pop.'},
+    {artist:'NE-YO',q:'Qual destas músicas é um sucesso de Ne-Yo?',a:['So Sick','Bad Romance','Despacito','Firework'],correct:0,why:'“So Sick” foi um dos primeiros grandes hits de Ne-Yo.'},
+    {artist:'BLACK EYED PEAS',q:'Black Eyed Peas é conhecido por misturar quais estilos musicais?',a:['Hip-hop e pop','Sertanejo e pagode','Música clássica e ópera','Forró e samba'],correct:0,why:'O grupo mistura hip-hop, pop, dance e música eletrônica.'},
+    {artist:'BLACK EYED PEAS',q:'Qual destas músicas é um dos maiores sucessos do grupo?',a:['I Gotta Feeling','Wonderwall','Imagine','Take On Me'],correct:0,why:'“I Gotta Feeling” se tornou um dos maiores hits do Black Eyed Peas.'},
+    {artist:'NELLY',q:'Nelly é conhecido principalmente como:',a:['Rapper','Cantor de ópera','DJ de música eletrônica','Guitarrista clássico'],correct:0,why:'Nelly é um rapper norte-americano.'},
+    {artist:'NELLY',q:'Qual destas músicas é de Nelly?',a:['Hot in Herre','Blinding Lights','Flowers','Viva La Vida'],correct:0,why:'“Hot in Herre” é um dos maiores sucessos de Nelly.'},
+    {artist:'IVETE SANGALO',q:'Ivete Sangalo é uma cantora brasileira de qual estado?',a:['Bahia','Paraná','Goiás','Amazonas'],correct:0,why:'Ivete Sangalo nasceu em Juazeiro, na Bahia.'},
+    {artist:'IVETE SANGALO',q:'Qual estilo musical está muito associado à carreira de Ivete Sangalo?',a:['Axé','Heavy metal','Country','Reggae'],correct:0,why:'O axé é um dos estilos mais associados à trajetória da cantora.'},
+    {artist:'ELTON JOHN',q:'Elton John é conhecido por tocar principalmente qual instrumento?',a:['Piano','Bateria','Violino','Saxofone'],correct:0,why:'O piano é a marca registrada das apresentações de Elton John.'},
+    {artist:'ELTON JOHN',q:'Qual destas músicas é um grande sucesso de Elton John?',a:['Rocket Man','Smells Like Teen Spirit','Thriller','Wonderwall'],correct:0,why:'“Rocket Man” é um clássico de Elton John.'},
+    {artist:'GILBERTO GIL',q:'Gilberto Gil é um importante representante de qual movimento cultural e musical brasileiro?',a:['Tropicalismo','Jovem Guarda exclusivamente','Movimento punk','Grunge'],correct:0,why:'Gilberto Gil foi uma das figuras centrais do Tropicalismo.'},
+    {artist:'GILBERTO GIL',q:'Qual destas músicas é de Gilberto Gil?',a:['Aquele Abraço','Garota de Ipanema','O Bêbado e a Equilibrista','Metamorfose Ambulante'],correct:0,why:'“Aquele Abraço” é uma canção de Gilberto Gil.'},
+    {artist:'ROD STEWART',q:'Rod Stewart é conhecido mundialmente por qual estilo musical?',a:['Rock','Funk brasileiro','Forró','Reggae'],correct:0,why:'Rod Stewart é um dos grandes nomes do rock.'},
+    {artist:'ROD STEWART',q:'Qual destas músicas é um sucesso de Rod Stewart?',a:['Maggie May','Billie Jean','Perfect','Someone Like You'],correct:0,why:'“Maggie May” é um dos clássicos de Rod Stewart.'}
+  ]},
+  brand:{label:'DESAFIO PING PONG',questions:[
+    {q:'Em que ano, segundo a história apresentada no projeto, Ping Pong foi lançado?',a:['1945','1960','1985','2001'],correct:0,why:'O contexto histórico do projeto apresenta 1945 como ano de lançamento.'},
+    {q:'O que acompanhava a experiência clássica da marca?',a:['Figurinhas e colecionáveis','Aplicativo de banco','Jogos online','Ingressos de cinema'],correct:0,why:'As figurinhas e colecionáveis faziam parte da experiência de descoberta e troca.'},
+    {q:'Qual era uma das brincadeiras ligadas às coleções?',a:['Trocar figurinhas','Montar computadores','Fazer chamadas','Editar vídeos'],correct:0,why:'Trocar e completar coleções fazia parte da diversão.'},
+    {q:'O que a nova Ping Pong Collection propõe?',a:['Levar a nostalgia ao universo digital','Apagar as coleções antigas','Vender apenas roupas','Substituir música por esportes'],correct:0,why:'A ideia é atualizar o legado com cards, avatares e experiências digitais.'}
+  ]}
+};
+let quizType='music',quizIndex=0,quizScore=0,answered=false,finished=false;
+const qEl=document.querySelector('#quiz-question'),optsEl=document.querySelector('#quiz-options'),feedbackEl=document.querySelector('#quiz-feedback'),nextEl=document.querySelector('#quiz-next');
+function renderQuiz(){
+  const data=quizData[quizType],q=data.questions[quizIndex];
+  document.querySelector('#quiz-category').textContent=q.artist?data.label+' · '+q.artist:data.label;
+  document.querySelector('#quiz-progress').textContent='PERGUNTA '+(quizIndex+1)+' / '+data.questions.length;
+  qEl.textContent=q.q;optsEl.innerHTML='';feedbackEl.textContent='';
+  nextEl.disabled=true;nextEl.textContent=quizIndex===data.questions.length-1?'VER RESULTADO ↗':'PRÓXIMA PERGUNTA →';
+  answered=false;finished=false;
+  q.a.forEach((answer,i)=>{const b=document.createElement('button');b.className='quiz-option';b.textContent=String.fromCharCode(65+i)+'. '+answer;b.addEventListener('click',()=>answerQuiz(i));optsEl.appendChild(b)});
+}
+function answerQuiz(index){
+  if(answered)return;answered=true;const q=quizData[quizType].questions[quizIndex];
+  [...optsEl.children].forEach((b,i)=>{b.disabled=true;if(i===q.correct)b.classList.add('correct');if(i===index&&i!==q.correct)b.classList.add('wrong')});
+  if(index===q.correct){quizScore++;feedbackEl.textContent='ACERTOU! '+q.why}else feedbackEl.textContent='QUASE! '+q.why;
+  nextEl.disabled=false;
+}
+nextEl.addEventListener('click',()=>{
+  if(finished){quizIndex=0;quizScore=0;renderQuiz();return}
+  if(!answered)return;
+  if(quizIndex<quizData[quizType].questions.length-1){quizIndex++;renderQuiz()}
+  else{
+    const total=quizData[quizType].questions.length;
+    qEl.textContent='VOCÊ FEZ '+quizScore+' DE '+total+' PONTOS!';
+    optsEl.innerHTML='';
+    feedbackEl.textContent=quizScore===total?'PERFEITO! VOCÊ DOMINA ESSA VIBE.':quizScore>=Math.ceil(total*.7)?'MANDOU MUITO BEM! VOCÊ CONHECE ESSA VIBE.':'BOA! CONTINUE EXPLORANDO O UNIVERSO PING PONG.';
+    nextEl.textContent='JOGAR NOVAMENTE ↻';nextEl.disabled=false;finished=true;
+  }
+});
+document.querySelectorAll('.quiz-tab').forEach(tab=>tab.addEventListener('click',()=>{
+  document.querySelectorAll('.quiz-tab').forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');quizType=tab.dataset.quiz;quizIndex=0;quizScore=0;renderQuiz();
+}));
+renderQuiz();
 // Animações de entrada.
 const revealTargets=document.querySelectorAll('.collect-card,.rarity-card,.feature-grid article,.story-content,.gift-item,.fact-card');if('IntersectionObserver'in window){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target)}}),{threshold:.12});revealTargets.forEach(item=>{item.classList.add('reveal');observer.observe(item)});}
 
