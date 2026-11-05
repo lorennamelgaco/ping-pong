@@ -198,7 +198,7 @@ const revealTargets=document.querySelectorAll('.collect-card,.rarity-card,.featu
     5:'zara-larsson.jpeg',
     6:'halsey.jpeg',
     7:'demi-lovato.jpeg',
-    8:'mgk.jpeg',
+    8:'mgk.jpg.jpeg',
     9:'j-balvin.jpeg',
     10:'calvin-harris.jpeg',
     11:'maroon-5.jpeg',
