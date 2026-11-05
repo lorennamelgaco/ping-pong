@@ -1,47 +1,10 @@
-// Navegação por âncoras (layout desktop).
-const filters=document.querySelectorAll('.filter');const cards=document.querySelectorAll('.collect-card');filters.forEach(button=>button.addEventListener('click',()=>{filters.forEach(item=>item.classList.remove('active'));button.classList.add('active');const selected=button.dataset.filter;cards.forEach(card=>{card.hidden=selected!=='todos'&&card.dataset.category!==selected;});}));
-// Menu mobile (botão ☰): abre e fecha a navegação.
-const menuToggle=document.querySelector('.menu-toggle'),mainNav=document.querySelector('.main-nav');if(menuToggle&&mainNav){menuToggle.addEventListener('click',()=>{const open=mainNav.classList.toggle('open');menuToggle.setAttribute('aria-expanded',String(open))});mainNav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{mainNav.classList.remove('open');menuToggle.setAttribute('aria-expanded','false')}))}
-const toast=document.querySelector('.toast');let toastTimer;document.querySelectorAll('.collect-card').forEach(card=>{card.setAttribute('tabindex','0');card.setAttribute('role','button');const show=()=>{toast.textContent='Em breve: '+card.querySelector('h3').textContent+' — coleção demonstrativa.';toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2600)};card.addEventListener('click',show);card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();show()}});});
-// PASSAPORTE MUSICAL: carimbos persistentes com animação.
-const stickerButtons=[...document.querySelectorAll('.festival-stamp')];
-let savedStickers=[];
-try{savedStickers=JSON.parse(localStorage.getItem('pp-stickers')||'[]')}catch(e){savedStickers=[]}
-stickerButtons.forEach((button,index)=>{
-  if(savedStickers.includes(index)){button.classList.add('collected');button.setAttribute('aria-pressed','true')}
-  button.addEventListener('click',()=>{
-    const collected=button.classList.toggle('collected');
-    button.setAttribute('aria-pressed',String(collected));
-    button.classList.remove('stamp-hit');
-    void button.offsetWidth;
-    if(collected)button.classList.add('stamp-hit');
-    updateStickerCount();
-  });
-});
-let previousStickerCount=stickerButtons.filter(b=>b.classList.contains('collected')).length;
-function showAlbumCelebration(){const modal=document.querySelector('#album-celebration');if(!modal)return;modal.hidden=false;document.body.classList.add('celebration-open');document.querySelector('#close-celebration')?.focus()}
-function closeAlbumCelebration(){const modal=document.querySelector('#album-celebration');if(modal)modal.hidden=true;document.body.classList.remove('celebration-open')}
-document.querySelector('#close-celebration')?.addEventListener('click',closeAlbumCelebration);
-document.querySelector('#album-celebration')?.addEventListener('click',event=>{if(event.target.id==='album-celebration')closeAlbumCelebration()});
-document.addEventListener('keydown',event=>{if(event.key==='Escape')closeAlbumCelebration()});
-function updateStickerCount(){
-  const count=stickerButtons.filter(b=>b.classList.contains('collected')).length,total=stickerButtons.length;
-  document.querySelector('#sticker-count').textContent=count;
-  document.querySelector('#sticker-percent').textContent=Math.round(count/total*100)+'%';
-  document.querySelector('#sticker-progress').style.width=count/total*100+'%';
-  localStorage.setItem('pp-stickers',JSON.stringify(stickerButtons.map((b,i)=>b.classList.contains('collected')?i:null).filter(v=>v!==null)));
-  if(count===total&&previousStickerCount<total&&localStorage.getItem('pp-album-celebrated')!=='true'){localStorage.setItem('pp-album-celebrated','true');showAlbumCelebration()}
-  if(count<total)localStorage.removeItem('pp-album-celebrated');
-  previousStickerCount=count;
-}
-updateStickerCount();
-
 // Mini game: Catch the Beat — capture os itens que caem.
 (()=>{
   const arena=document.querySelector('#catch-arena');
   if(!arena)return;
   const basket=document.querySelector('#catch-basket'),scoreEl=document.querySelector('#catch-score'),timeEl=document.querySelector('#catch-time'),bestEl=document.querySelector('#catch-best');
   const startPanel=document.querySelector('#catch-start'),startButton=document.querySelector('#catch-start-button'),overlay=document.querySelector('#catch-overlay'),resultTitle=document.querySelector('#catch-result-title'),resultScore=document.querySelector('#catch-result-score'),restart=document.querySelector('#catch-restart'),status=document.querySelector('#catch-status');
+  if(!basket||!scoreEl||!timeEl||!bestEl||!startPanel||!startButton||!overlay||!resultTitle||!resultScore||!restart||!status)return;
   const items=[{emoji:'🍬',points:10},{emoji:'🫧',points:5},{emoji:'🎵',points:15},{emoji:'💎',points:30},{emoji:'💣',points:-10}];
   let running=false,score=0,time=30,basketX=50,objects=[],lastSpawn=0,lastFrame=0,animationId=0,timerId=0,dragging=false;
   let best=Number(localStorage.getItem('pp-catch-best')||0);bestEl.textContent=String(best).padStart(3,'0');
@@ -93,9 +56,48 @@ updateStickerCount();
   arena.addEventListener('pointerdown',e=>{if(!running)return;dragging=true;arena.setPointerCapture(e.pointerId);moveBasket(e.clientX)});
   arena.addEventListener('pointermove',e=>{if(dragging&&running)moveBasket(e.clientX)});
   arena.addEventListener('pointerup',()=>dragging=false);arena.addEventListener('pointercancel',()=>dragging=false);
-  startButton.addEventListener('click',begin);restart.addEventListener('click',begin);
+  document.addEventListener('click',event=>{const target=event.target instanceof Element?event.target.closest('#catch-start-button, #catch-restart'):null;if(target){event.preventDefault();begin()}},true);
   updateBasket();updateScore();timeEl.textContent=time;
 })();
+
+// Navegação por âncoras (layout desktop).
+const filters=document.querySelectorAll('.filter');const cards=document.querySelectorAll('.collect-card');filters.forEach(button=>button.addEventListener('click',()=>{filters.forEach(item=>item.classList.remove('active'));button.classList.add('active');const selected=button.dataset.filter;cards.forEach(card=>{card.hidden=selected!=='todos'&&card.dataset.category!==selected;});}));
+// Menu mobile (botão ☰): abre e fecha a navegação.
+const menuToggle=document.querySelector('.menu-toggle'),mainNav=document.querySelector('.main-nav');if(menuToggle&&mainNav){menuToggle.addEventListener('click',()=>{const open=mainNav.classList.toggle('open');menuToggle.setAttribute('aria-expanded',String(open))});mainNav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{mainNav.classList.remove('open');menuToggle.setAttribute('aria-expanded','false')}))}
+const toast=document.querySelector('.toast');let toastTimer;document.querySelectorAll('.collect-card').forEach(card=>{card.setAttribute('tabindex','0');card.setAttribute('role','button');const show=()=>{toast.textContent='Em breve: '+card.querySelector('h3').textContent+' — coleção demonstrativa.';toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2600)};card.addEventListener('click',show);card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();show()}});});
+// PASSAPORTE MUSICAL: carimbos persistentes com animação.
+const stickerButtons=[...document.querySelectorAll('.festival-stamp')];
+let savedStickers=[];
+try{savedStickers=JSON.parse(localStorage.getItem('pp-stickers')||'[]')}catch(e){savedStickers=[]}
+stickerButtons.forEach((button,index)=>{
+  if(savedStickers.includes(index)){button.classList.add('collected');button.setAttribute('aria-pressed','true')}
+  button.addEventListener('click',()=>{
+    const collected=button.classList.toggle('collected');
+    button.setAttribute('aria-pressed',String(collected));
+    button.classList.remove('stamp-hit');
+    void button.offsetWidth;
+    if(collected)button.classList.add('stamp-hit');
+    updateStickerCount();
+  });
+});
+let previousStickerCount=stickerButtons.filter(b=>b.classList.contains('collected')).length;
+function showAlbumCelebration(){const modal=document.querySelector('#album-celebration');if(!modal)return;modal.hidden=false;document.body.classList.add('celebration-open');document.querySelector('#close-celebration')?.focus()}
+function closeAlbumCelebration(){const modal=document.querySelector('#album-celebration');if(modal)modal.hidden=true;document.body.classList.remove('celebration-open')}
+document.querySelector('#close-celebration')?.addEventListener('click',closeAlbumCelebration);
+document.querySelector('#album-celebration')?.addEventListener('click',event=>{if(event.target.id==='album-celebration')closeAlbumCelebration()});
+document.addEventListener('keydown',event=>{if(event.key==='Escape')closeAlbumCelebration()});
+function updateStickerCount(){
+  const count=stickerButtons.filter(b=>b.classList.contains('collected')).length,total=stickerButtons.length;
+  document.querySelector('#sticker-count').textContent=count;
+  document.querySelector('#sticker-percent').textContent=Math.round(count/total*100)+'%';
+  document.querySelector('#sticker-progress').style.width=count/total*100+'%';
+  localStorage.setItem('pp-stickers',JSON.stringify(stickerButtons.map((b,i)=>b.classList.contains('collected')?i:null).filter(v=>v!==null)));
+  if(count===total&&previousStickerCount<total&&localStorage.getItem('pp-album-celebrated')!=='true'){localStorage.setItem('pp-album-celebrated','true');showAlbumCelebration()}
+  if(count<total)localStorage.removeItem('pp-album-celebrated');
+  previousStickerCount=count;
+}
+updateStickerCount();
+
 // Brindes: checklist persistente.
 const giftChecks=[...document.querySelectorAll('[data-gift]')];const savedGifts=JSON.parse(localStorage.getItem('pp-gifts')||'[]');giftChecks.forEach(input=>{input.checked=savedGifts.includes(input.dataset.gift);input.addEventListener('change',()=>{const checked=giftChecks.filter(item=>item.checked).map(item=>item.dataset.gift);localStorage.setItem('pp-gifts',JSON.stringify(checked));document.querySelector('#gift-count').textContent=checked.length})});document.querySelector('#gift-count').textContent=giftChecks.filter(i=>i.checked).length;
 // Criador de avatar v2: bola de chiclete em SVG.
