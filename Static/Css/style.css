@@ -167,3 +167,28 @@
 .discovery-replay{grid-column:2;justify-self:center;border:0;cursor:pointer}.discovery-replay[hidden]{display:none}
 @media(max-width:850px){.album-section{grid-template-columns:1fr}.sticker-hint{grid-column:1;margin-top:0}.passport-stamps{grid-template-columns:repeat(2,minmax(0,1fr))}.stamp-ring{width:105px;height:105px}.discovery-game{grid-template-columns:1fr}.discovery-replay{grid-column:1}}
 @media(prefers-reduced-motion:reduce){.festival-stamp.stamp-hit .stamp-ring,.ticket-choice.ticket-win{animation:none!important}}
+
+
+/* CATCH THE BEAT — minijogo de cestinha */
+.discovery-game{display:none!important}
+.catch-game{margin-top:48px;padding:30px;background:#f2eee7;border:1px solid #d9d2c7;box-shadow:8px 8px 0 #00000012}
+.catch-game-top{display:flex;align-items:flex-start;justify-content:space-between;gap:22px;margin-bottom:20px}
+.catch-game-top h3{font:clamp(25px,3vw,38px)/1 var(--display);margin:8px 0}.catch-game-top h3 em{font-style:normal;color:var(--pink)}
+.catch-instructions{max-width:500px;font-size:12px;line-height:1.6;color:#625e58}
+.catch-stats{display:flex;gap:9px;flex-shrink:0}
+.catch-stats div{min-width:72px;padding:10px 12px;background:#fff;border:1px solid #ded8cf;text-align:center}
+.catch-stats small{display:block;font:800 8px var(--body);letter-spacing:1px;color:#777}
+.catch-stats strong{display:block;margin-top:4px;font:22px var(--display);color:var(--pink);font-variant-numeric:tabular-nums}
+.catch-arena{height:300px;position:relative;overflow:hidden;border:2px solid #222;background:radial-gradient(circle at 20% 20%,#ffffffa8 0 2px,transparent 3px),radial-gradient(circle at 75% 65%,#ffffff8a 0 2px,transparent 3px),linear-gradient(135deg,#f9dbe7,#e5e5fb 55%,#fce9bc);background-size:90px 90px,120px 120px,auto;touch-action:pan-y;outline:none}
+.catch-arena:focus-visible{box-shadow:0 0 0 3px var(--pink)}
+.catch-basket{position:absolute;bottom:9px;left:50%;transform:translateX(-50%);font-size:44px;line-height:1;filter:drop-shadow(0 4px 2px #0002);transition:left .06s linear;z-index:2;user-select:none}
+.catch-falling-item{position:absolute;top:0;font-size:27px;line-height:1;transform:translateX(-50%);filter:drop-shadow(0 2px 2px #0002);pointer-events:none;z-index:1}
+.catch-start,.catch-overlay{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;text-align:center;background:#17151dcc;color:white;padding:20px}
+.catch-start[hidden],.catch-overlay[hidden]{display:none}
+.catch-start>span{font-size:45px}.catch-start>b,.catch-overlay>b{font:24px var(--display);letter-spacing:1px}.catch-start small{font-size:11px;color:#eee}
+.catch-start button,.catch-overlay button{margin-top:9px;padding:12px 20px;border:0;background:var(--yellow);color:#111;font:900 10px var(--body);letter-spacing:1px;cursor:pointer}
+.catch-overlay strong{font:30px var(--display);color:var(--yellow)}
+.catch-legend{display:flex;justify-content:center;flex-wrap:wrap;gap:10px 20px;margin-top:17px}
+.catch-legend span{font:800 9px var(--body);letter-spacing:.4px;color:#56514b}.catch-legend b{color:var(--pink)}
+.catch-status{text-align:center;margin:15px 0 0;font:800 9px var(--body);letter-spacing:1px;color:var(--pink)}
+@media(max-width:700px){.catch-game{padding:18px}.catch-game-top{display:block}.catch-stats{margin:16px 0}.catch-stats div{flex:1}.catch-arena{height:260px}.catch-legend{justify-content:flex-start;gap:9px 13px}}
