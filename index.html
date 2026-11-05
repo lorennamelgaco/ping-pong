@@ -60,14 +60,18 @@
         <article class="collect-card collect-yellow" data-category="digital"><div class="collect-meta"><span>DROP 003</span><span>03 / 03</span></div><div class="collect-visual visual-wave"><div class="wave-disc">♫<small>PP DIGITAL</small></div><span class="visual-stamp">PLAY<br>IT LOUD</span></div><div class="collect-info"><div><h3>BEAT CLUB</h3><p>Som, arte e identidade.</p></div><span class="arrow-circle">↗</span></div><span class="collect-type">DIGITAL / 18 ITENS</span></article>
       </div>
       <p class="demo-caption">* Coleções demonstrativas criadas para apresentar o conceito da plataforma.</p>
-      <div class="discovery-game" id="discovery-game">
-        <div class="discovery-game-copy"><p class="eyebrow pink-text">MINI GAME / SORTE DE COLECIONADOR</p><h3>ACHE O <em>INGRESSO DOURADO.</em></h3><p>Três ingressos, uma descoberta especial. Escolha um e veja se a sorte está do seu lado.</p><span class="discovery-game-status" id="discovery-game-status" aria-live="polite">ESCOLHA SEU INGRESSO.</span></div>
-        <div class="ticket-game" id="ticket-game" aria-label="Escolha um dos três ingressos">
-          <button class="ticket-choice" type="button" data-ticket="0"><span>✦</span><b>INGRESSO</b><small>PP / 001</small></button>
-          <button class="ticket-choice" type="button" data-ticket="1"><span>♫</span><b>INGRESSO</b><small>PP / 002</small></button>
-          <button class="ticket-choice" type="button" data-ticket="2"><span>★</span><b>INGRESSO</b><small>PP / 003</small></button>
+      <div class="catch-game" id="catch-game">
+        <div class="catch-game-top">
+          <div><p class="eyebrow pink-text">MINI GAME / CATCH THE BEAT</p><h3>PEGUE O <em>SEU PRÓXIMO ACHADO!</em></h3><p class="catch-instructions">Mova a cestinha e capture os itens que caem. Use as setas do teclado ou A/D. No celular, arraste a cestinha.</p></div>
+          <div class="catch-stats"><div><small>PONTOS</small><strong id="catch-score">000</strong></div><div><small>TEMPO</small><strong id="catch-time">30</strong></div><div><small>RECORDE</small><strong id="catch-best">000</strong></div></div>
         </div>
-        <button class="button button-dark discovery-replay" id="discovery-replay" type="button" hidden>JOGAR NOVAMENTE ↻</button>
+        <div class="catch-arena" id="catch-arena" tabindex="0" role="application" aria-label="Jogo de capturar itens. Use as setas esquerda e direita ou A e D para mover a cestinha.">
+          <div class="catch-start" id="catch-start"><span>🧺</span><b>PREPARE A CESTINHA!</b><small>Capture doces, bolhas e notas musicais.</small><button type="button" id="catch-start-button">COMEÇAR A JOGAR ✦</button></div>
+          <div class="catch-overlay" id="catch-overlay" hidden><b id="catch-result-title">FIM DE JOGO!</b><strong id="catch-result-score">0 PONTOS</strong><button type="button" id="catch-restart">JOGAR NOVAMENTE ↻</button></div>
+          <div class="catch-basket" id="catch-basket" aria-hidden="true">🧺</div>
+        </div>
+        <div class="catch-legend"><span>🍬 DOCE <b>+10</b></span><span>🫧 BOLHA <b>+5</b></span><span>🎵 NOTA <b>+15</b></span><span>💎 ESPECIAL <b>+30</b></span><span>💣 ARMADILHA <b>−10</b></span></div>
+        <p class="catch-status" id="catch-status" aria-live="polite">30 SEGUNDOS. QUANTOS ACHADOS VOCÊ CONSEGUE PEGAR?</p>
       </div>
     </section>
 
