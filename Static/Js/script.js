@@ -249,13 +249,21 @@ const revealTargets=document.querySelectorAll('.collect-card,.rarity-card,.featu
   });
   async function renderFaces(){
     if(!window.html2canvas)throw new Error('A ferramenta de imagem ainda está carregando. Atualize a página e tente novamente.');
-    const tile=wrap.querySelector('.beat-card-tile'),flipper=tile.querySelector('.beat-card-flipper');
-    const was=tile.classList.contains('is-flipped');tile.classList.remove('is-flipped');
+    const tile=wrap.querySelector('.beat-card-tile');
     const front=tile.querySelector('.beat-card-front'),back=tile.querySelector('.beat-card-back');
+    const saved=[front,back].map(el=>({transform:el.style.transform,backface:el.style.backfaceVisibility,webkit:el.style.webkitBackfaceVisibility}));
+    const was=tile.classList.contains('is-flipped');
+    tile.classList.remove('is-flipped');
+    [front,back].forEach(el=>{el.style.transform='none';el.style.backfaceVisibility='visible';el.style.webkitBackfaceVisibility='visible'});
     const opts={backgroundColor:null,scale:3,useCORS:true,logging:false};
-    const frontCanvas=await html2canvas(front,opts),backCanvas=await html2canvas(back,opts);
-    if(was)tile.classList.add('is-flipped');
-    return {front:frontCanvas,back:backCanvas};
+    try{
+      const frontCanvas=await html2canvas(front,opts);
+      const backCanvas=await html2canvas(back,opts);
+      return {front:frontCanvas,back:backCanvas};
+    }finally{
+      [front,back].forEach((el,i)=>{el.style.transform=saved[i].transform;el.style.backfaceVisibility=saved[i].backface;el.style.webkitBackfaceVisibility=saved[i].webkit});
+      if(was)tile.classList.add('is-flipped');
+    }
   }
   $('#beat-download').addEventListener('click',async()=>{
     const btn=$('#beat-download'),hint=$('#beat-modal-hint');btn.disabled=true;hint.textContent='PREPARANDO SEU PNG...';
@@ -271,13 +279,14 @@ const revealTargets=document.querySelectorAll('.collect-card,.rarity-card,.featu
   });
   $('#beat-print').addEventListener('click',async()=>{
     const btn=$('#beat-print'),hint=$('#beat-modal-hint');btn.disabled=true;hint.textContent='PREPARANDO IMPRESSÃO...';
+    const win=window.open('','_blank');
+    if(!win){btn.disabled=false;hint.textContent='Permita pop-ups para imprimir o card.';return;}
     try{
-      const {front,back}=await renderFaces(),win=window.open('','_blank');
-      if(!win)throw new Error('Permita pop-ups para imprimir o card.');
+      const {front,back}=await renderFaces();
       const frontUrl=front.toDataURL('image/png'),backUrl=back.toDataURL('image/png');
-      win.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Beat Card '+pad(selected)+'</title><style>@page{size:A4 landscape;margin:12mm}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#fff}.sheet{min-height:180mm;display:flex;align-items:center;justify-content:center;gap:12mm}.sheet img{height:150mm;width:auto;max-width:48%;object-fit:contain}.caption{position:fixed;bottom:5mm;left:0;right:0;text-align:center;font-size:9pt;color:#555}@media print{.caption{display:none}}</style></head><body><main class="sheet"><img src="'+frontUrl+'" alt="Frente do card"><img src="'+backUrl+'" alt="Verso do card"></main><p class="caption">Imprima em tamanho real ou ajuste conforme o papel. Frente e verso lado a lado para recorte.</p><script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script></body></html>');
+      win.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Beat Card '+pad(selected)+'</title><style>@page{size:A4 landscape;margin:12mm}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#fff}.sheet{min-height:180mm;display:flex;align-items:center;justify-content:center;gap:12mm}.sheet img{height:150mm;width:auto;max-width:48%;object-fit:contain}.caption{position:fixed;bottom:5mm;left:0;right:0;text-align:center;font-size:9pt;color:#555}@media print{.caption{display:none}}</style></head><body><main class="sheet"><img src="'+frontUrl+'" alt="Frente do card"><img src="'+backUrl+'" alt="Verso do card"></main><p class="caption">Frente e verso lado a lado para recorte.</p><script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script></body></html>');
       win.document.close();hint.textContent='IMPRESSÃO ABERTA EM UMA NOVA ABA.';
-    }catch(err){hint.textContent=err.message||'Não foi possível preparar a impressão.';}
+    }catch(err){win.close();hint.textContent=err.message||'Não foi possível preparar a impressão.';}
     finally{btn.disabled=false;}
   });
 })();
