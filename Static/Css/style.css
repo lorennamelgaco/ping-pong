@@ -20,3 +20,24 @@
 .avatar-actions .button-ghost{background:transparent;color:#fff;border:1px solid #777}
 .avatar-feedback{margin-top:16px}
 @media(max-width:850px){.avatar-section{grid-template-columns:1fr;padding:80px 7%}.avatar-builder{grid-template-columns:1fr}}
+
+/* PLAYLIST EMBED */
+.spotify-player{width:100%;max-width:520px;border-radius:12px;overflow:hidden;box-shadow:0 22px 55px #0003;background:#121212}
+.spotify-player iframe{display:block;width:100%;height:352px;border:0}
+
+/* ALBUM COMPLETION CELEBRATION */
+.album-celebration[hidden]{display:none}
+.album-celebration{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:24px;background:#080808d9;backdrop-filter:blur(8px);animation:celebrateFade .35s ease both}
+.celebration-card{position:relative;width:min(520px,100%);padding:52px 42px;text-align:center;background:var(--paper);border:3px solid var(--yellow);box-shadow:12px 12px 0 var(--pink);animation:celebratePop .55s cubic-bezier(.2,1.4,.4,1) both;overflow:hidden}
+.celebration-card:before,.celebration-card:after{content:'✦ ✳ ✦';position:absolute;color:var(--pink);font-size:25px;letter-spacing:12px;opacity:.75}
+.celebration-card:before{top:15px;left:15px}.celebration-card:after{bottom:15px;right:15px}
+.celebration-spark{display:block;color:var(--pink);font-size:32px;letter-spacing:12px;margin-bottom:20px;animation:celebrateSpin 5s linear infinite}
+.celebration-card .eyebrow{color:var(--pink);margin-bottom:15px}
+.celebration-card h3{font:clamp(38px,7vw,62px)/.95 var(--display);margin:12px 0 18px}
+.celebration-card h3 em{color:var(--pink);font-style:normal}
+.celebration-card>p:not(.eyebrow){font-size:14px;line-height:1.7;max-width:350px;margin:0 auto 26px}
+.celebration-card .button{border:0;cursor:pointer}
+@keyframes celebrateFade{from{opacity:0}to{opacity:1}}
+@keyframes celebratePop{from{opacity:0;transform:translateY(28px) scale(.82)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes celebrateSpin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.album-celebration,.celebration-card,.celebration-spark{animation:none!important}}
