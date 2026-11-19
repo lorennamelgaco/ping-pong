@@ -192,3 +192,21 @@
 .catch-legend span{font:800 9px var(--body);letter-spacing:.4px;color:#56514b}.catch-legend b{color:var(--pink)}
 .catch-status{text-align:center;margin:15px 0 0;font:800 9px var(--body);letter-spacing:1px;color:var(--pink)}
 @media(max-width:700px){.catch-game{padding:15px}.catch-game-top{display:block}.catch-stats{margin:16px 0}.catch-stats div{flex:1}.catch-arena{height:155px}.catch-legend{justify-content:flex-start;gap:9px 13px}}
+
+
+/* RODAPÉ — assinatura do projeto */
+.site-footer{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.site-footer .footer-brand{flex-shrink:0}
+.site-footer .footer-brand .brand-mark{width:46px;height:46px;font-size:21px}
+.site-footer .footer-brand>span:last-child{font-size:17px;line-height:.9;letter-spacing:-.5px}
+.site-footer .footer-brand small{font-size:8px;letter-spacing:3px;margin-top:5px}
+.footer-tagline{font-size:9px;letter-spacing:1.2px;color:rgba(255,255,255,.58);text-align:center}
+.footer-credits{display:flex;flex-direction:column;align-items:flex-end;gap:7px;text-align:right}
+.footer-credits strong{font-size:11px;letter-spacing:.4px;color:var(--yellow)}
+.footer-credits small{font-size:8px;letter-spacing:.7px;color:rgba(255,255,255,.5)}
+@media(max-width:700px){
+  .site-footer{justify-content:center;text-align:center;gap:18px;padding:35px 20px}
+  .site-footer .footer-brand{margin:0 auto}
+  .footer-tagline{width:100%}
+  .footer-credits{align-items:center;text-align:center;width:100%}
+}
