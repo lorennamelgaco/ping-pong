@@ -208,3 +208,8 @@
   .footer-tagline{width:100%}
   .footer-credits{align-items:center;text-align:center;width:100%}
 }
+
+
+/* LOGO OFICIAL NO CABEÇALHO */
+.site-header .header-brand{display:flex;align-items:center;flex-shrink:0;gap:0}
+.site-header .header-logo{display:block;width:145px;height:58px;max-width:100%;object-fit:contain;object-position:left center}
